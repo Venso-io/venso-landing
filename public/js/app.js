@@ -1761,14 +1761,41 @@ function card(className, html) {
   return div;
 }
 
+// All landing icons share the same 24px outlined vector treatment.
+const SITE_MARKS = {
+  bot:'<rect x="4" y="7" width="16" height="13" rx="3"/><path d="M12 3v4M8 13h.01M16 13h.01M9 17h6"/>',
+  box:'<path d="m3 7 9-4 9 4v10l-9 4-9-4V7Zm0 0 9 4 9-4m-9 4v10"/>',
+  receipt:'<path d="M5 3h14v18l-3-2-4 2-4-2-3 2V3Zm4 5h6M9 12h6"/>',
+  wallet:'<rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 9h18m-4 5h2"/>',
+  flower:'<circle cx="12" cy="12" r="2"/><path d="M12 10c-3-5 1-8 3-5 2 3-1 5-1 5 6-3 8 1 5 3-3 2-5-1-5-1 3 6-1 8-3 5-2-3 1-5 1-5-6 3-8-1-5-3 3-2 5 1 5 1"/>',
+  utensils:'<path d="M3 3v6a3 3 0 0 0 6 0V3M6 3v18M16 21V3c4 1 5 5 5 9h-5"/>',
+  sparkle:'<path d="m12 2 2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2L12 2Z"/>',
+  bag:'<path d="M4 8h16l1 13H3L4 8Zm4 0V6a4 4 0 0 1 8 0v2"/>',
+  medical:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 7v10M7 12h10"/>',
+  wrench:'<path d="M20 7a6 6 0 0 1-8 7L6 20a2.5 2.5 0 1 1-3-3l6-6a6 6 0 0 1 7-8l-4 4 3 3 5-3Z"/>',
+  message:'<path d="M21 12c0 5-4 8-9 8l-7 2 2-5a8.5 8.5 0 1 1 14-5ZM8 12h8"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18m-9-9c-3 3-3 15 0 18m0-18c3 3 3 15 0 18"/>',
+  people:'<circle cx="9" cy="8" r="3"/><path d="M3 20v-2c0-3 3-5 6-5s6 2 6 5v2M16 5a3 3 0 0 1 0 6"/>',
+  plug:'<path d="M8 3v4m8-4v4M6 7h12v4c0 3-3 5-6 5s-6-2-6-5V7Zm6 9v5"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/>',
+  check:'<path d="M5 12l4 4L19 6"/>'
+};
+function siteIcon(name) {
+  return '<svg class="marketing-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+    (SITE_MARKS[name] || SITE_MARKS.sparkle) + '</svg>';
+}
+const FEATURE_ICONS=['bot','box','receipt','wallet'];
+const VERTICAL_ICONS=['flower','utensils','sparkle','bag','medical','wrench'];
+const INTEGRATION_ICONS=['message','globe','people','receipt','wallet','plug','calendar','box','bot','check'];
+
 function renderStaticSections() {
   const data = activeCopy();
   fill('metricsGrid', data.metrics.map(([value, text]) => card('metric-card reveal', `<span>${value}</span><span>${text}</span>`)));
-  fill('featureGrid', data.features.map(([icon, title, text]) => card('feature-card reveal', `<div class="icon-box">${icon}</div><h3>${title}</h3><p>${text}</p>`)));
+  fill('featureGrid', data.features.map(([, title, text], index) => card('feature-card reveal', `<div class="icon-box">${siteIcon(FEATURE_ICONS[index])}</div><h3>${title}</h3><p>${text}</p>`)));
   fill('bentoGrid', data.bento.map(([size, num, title, text]) => card(`bento-card ${size} reveal`, `<span class="bento-value">${num}</span><h3>${title}</h3><p>${text}</p>`)));
   fill('timeline', data.steps.map(([num, title, text]) => card('step-card reveal', `<div class="step-num">${num}</div><h3>${title}</h3><p>${text}</p>`)));
-  fill('verticalGrid', data.verticals.map(([icon, title, text]) => card('vertical-card reveal', `<div class="visual-dot">${icon}</div><h3>${title}</h3><p>${text}</p>`)));
-  fill('integrationGrid', data.integrations.map(([icon, title, text]) => card('integration-card reveal', `<div class="visual-dot">${icon}</div><h3>${title}</h3><p>${text}</p>`)));
+  fill('verticalGrid', data.verticals.map(([, title, text], index) => card('vertical-card reveal', `<div class="visual-dot">${siteIcon(VERTICAL_ICONS[index])}</div><h3>${title}</h3><p>${text}</p>`)));
+  fill('integrationGrid', data.integrations.map(([, title, text], index) => card('integration-card reveal', `<div class="visual-dot">${siteIcon(INTEGRATION_ICONS[index])}</div><h3>${title}</h3><p>${text}</p>`)));
   fill('investorCards', data.investors.map(([title, text]) => card('investor-mini reveal', `<strong>${title}</strong><span>${text}</span>`)));
   fill('proofGrid', data.proofs.map(([name, role, quote]) => card('proof-card reveal', `<strong>${name}</strong><small>${role}</small><div class="stars-rating">★★★★★</div><p>“${quote}”</p>`)));
   observeReveal();
@@ -1781,21 +1808,78 @@ function fill(id, nodes) {
   nodes.forEach(node => root.appendChild(node));
 }
 
+/**
+ * Switch public tariff source by changing the meta tag in index.html:
+ * /api/tariffs today, /api/v1/tariffs after public API routing is agreed.
+ * Both legacy landing response and the system TariffResponseDTO are supported.
+ * This never calls protected admin endpoints or sends credentials.
+ */
+function normalizeTariffPayload(payload) {
+  const details = payload && typeof payload === 'object' && 'details' in payload ? payload.details : payload;
+  const list = Array.isArray(details) ? details
+    : Array.isArray(details?.tariffs) ? details.tariffs
+    : Array.isArray(details?.data) ? details.data : [];
+  return list.map(row => {
+    if (!row || typeof row !== 'object') return null;
+    if (typeof row.priceKzt === 'number' && row.name && typeof row.name === 'object' &&
+        Number.isFinite(row.priceKzt) && row.priceKzt >= 0 && row.isPublic !== false) {
+      return {
+        source: 'system',
+        id: String(row.code || row.id || '').toLowerCase(),
+        names: row.name,
+        priceKzt: row.priceKzt,
+        periodDays: Number.isFinite(row.periodDays) ? row.periodDays : 30,
+        maxRequests: Number(row.maxRequests) || 0,
+        maxChannels: Number(row.maxChannels) || 0,
+        maxUsers: Number(row.maxUsers) || 0,
+        highlighted: false,
+      };
+    }
+    if (typeof row.name === 'string' && typeof row.price === 'string') return row;
+    return null;
+  }).filter(Boolean);
+}
+
 async function fetchTariffs() {
   state.tariffs = FALLBACK_TARIFFS;
+  const endpoint = document.querySelector('meta[name="venso-public-tariffs-endpoint"]')?.content || '/api/tariffs';
   try {
-    const res = await fetch('/api/tariffs');
-    if (!res.ok) throw new Error('api_error');
-    const json = await res.json();
-    state.tariffs = Array.isArray(json.tariffs) && json.tariffs.length ? json.tariffs : FALLBACK_TARIFFS;
+    const url = new URL(endpoint, location.origin);
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') throw new Error('unsupported_protocol');
+    const response = await fetch(url.href, { headers: { Accept: 'application/json' } });
+    if (!response.ok) throw new Error('api_error');
+    const tariffs = normalizeTariffPayload(await response.json());
+    state.tariffs = tariffs.length ? tariffs : FALLBACK_TARIFFS;
   } catch (error) {
     state.tariffs = FALLBACK_TARIFFS;
   }
   renderPricing();
 }
 
-
 function localizeTariff(tariff) {
+  if (tariff.source === 'system') {
+    const lang = state.lang;
+    const strings = {
+      ru: { period:'дн.', requests:'AI-запросов', channels:'Каналов', users:'Пользователей', unlimited:'без ограничений' },
+      kk: { period:'күн', requests:'AI-сұраулар', channels:'Арналар', users:'Пайдаланушылар', unlimited:'шектеусіз' },
+      en: { period:'days', requests:'AI requests', channels:'Channels', users:'Users', unlimited:'unlimited' }
+    }[lang] || { period:'days', requests:'AI requests', channels:'Channels', users:'Users', unlimited:'unlimited' };
+    const fmt = value => value === 0 ? strings.unlimited :
+      new Intl.NumberFormat(lang === 'kk' ? 'kk-KZ' : lang === 'en' ? 'en-US' : 'ru-RU').format(value);
+    return {
+      ...tariff,
+      name: tariff.names?.[lang] || tariff.names?.ru || tariff.names?.en || tariff.id,
+      price: new Intl.NumberFormat('ru-RU').format(tariff.priceKzt) + ' ₸',
+      period: '/ ' + tariff.periodDays + ' ' + strings.period,
+      description: '',
+      badge: '',
+      features: [
+        strings.requests + ': ' + fmt(tariff.maxRequests),
+        strings.channels + ': ' + fmt(tariff.maxChannels),
+        strings.users + ': ' + fmt(tariff.maxUsers)
+      ]
+    };
+  }
   const local = (TARIFF_I18N[state.lang] && TARIFF_I18N[state.lang][tariff.id]) || {};
   return { ...tariff, ...local };
 }
@@ -1816,6 +1900,8 @@ function renderPricing() {
       <ul>${(tariff.features || []).map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
       <a class="${buttonClass}" href="#lead" data-plan="${escapeHtml(tariff.name)}">${tr('nav.cta')}</a>
     `);
+    // System API does not promise a free trial or promotional badge.
+    if (tariff.source === 'system') el.querySelector('.pricing-badge')?.remove();
     root.appendChild(el);
     if (planSelect) {
       const opt = document.createElement('option');
@@ -1901,7 +1987,7 @@ function renderScenarioContent() {
   const recRoot = document.getElementById('recommendations');
   recRoot.innerHTML = '';
   scenario.recs.forEach(([icon, title, text, price], index) => {
-    const rec = card(`rec-card ${index === 1 ? 'highlight' : ''}`, `<div><div class="rec-icon">${icon}</div><h3>${title}</h3><p>${text}</p></div><strong>${price}</strong>`);
+    const rec = card(`rec-card ${index === 1 ? 'highlight' : ''}`, `<div><div class="rec-icon">${siteIcon(['flower','bag','check'][index])}</div><h3>${title}</h3><p>${text}</p></div><strong>${price}</strong>`);
     rec.style.animationDelay = `${index * 120}ms`;
     recRoot.appendChild(rec);
   });
