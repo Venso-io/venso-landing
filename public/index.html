@@ -11,8 +11,8 @@
   <link rel="shortcut icon" href="/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="preload" as="image" href="/assets/assistant.png" />
-  <link rel="preload" as="image" href="/assets/hands.png" />
   <link rel="stylesheet" href="/css/styles.css?v=4-i18n-demo-20260617" />
+  <link rel="stylesheet" href="/css/design-system.css?v=pass1-20261113" />
 </head>
 <body>
   <div class="noise"></div>
@@ -24,7 +24,7 @@
     <a class="brand" href="#top" aria-label="VENSO home">
       <img src="/assets/logo.png" alt="VENSO" />
     </a>
-    <nav class="desktop-nav" aria-label="Main navigation">
+    <nav class="desktop-nav" aria-label="Главная навигация" data-i18n-aria-label="nav.primaryNav">
       <a href="#features" data-i18n="nav.features">Возможности</a>
       <a href="#how" data-i18n="nav.how">Как это работает</a>
       <a href="#demo" data-i18n="nav.demo">Демо</a>
@@ -33,16 +33,16 @@
       <a href="#investors" data-i18n="nav.investors">Инвесторам</a>
     </nav>
     <div class="header-actions">
-      <div class="lang-switch" aria-label="Language switcher">
+      <div class="lang-switch" aria-label="Выбор языка" data-i18n-aria-label="nav.language">
         <button class="lang-btn active" data-lang="ru">RU</button>
         <button class="lang-btn" data-lang="kk">KZ</button>
         <button class="lang-btn" data-lang="en">EN</button>
       </div>
       <a class="primary-btn sm" href="#lead" data-i18n="nav.cta">Начать бесплатно</a>
-      <button class="menu-btn" id="menuBtn" aria-label="Open menu"><span></span><span></span></button>
+      <button type="button" class="menu-btn" id="menuBtn" aria-label="Открыть меню" aria-controls="mobileMenu" aria-expanded="false"><span></span><span></span></button>
     </div>
-    <div class="mobile-menu" id="mobileMenu">
-      <div class="mobile-lang-switch" aria-label="Language switcher">
+    <nav class="mobile-menu" id="mobileMenu" aria-label="Мобильная навигация" data-i18n-aria-label="nav.mobileNav">
+      <div class="mobile-lang-switch" aria-label="Выбор языка" data-i18n-aria-label="nav.language">
         <button class="lang-btn active" data-lang="ru">RU</button>
         <button class="lang-btn" data-lang="kk">KZ</button>
         <button class="lang-btn" data-lang="en">EN</button>
@@ -53,7 +53,7 @@
       <a href="#integrations" data-i18n="nav.integrations">Интеграции</a>
       <a href="#pricing" data-i18n="nav.pricing">Тарифы</a>
       <a href="#investors" data-i18n="nav.investors">Инвесторам</a>
-    </div>
+    </nav>
   </header>
 
   <main>
@@ -75,7 +75,7 @@
         <div class="hero-visual reveal delay-1" aria-label="AI assistant visual">
           <div class="assistant-orbit orbit-a"></div>
           <div class="assistant-orbit orbit-b"></div>
-          <img class="assistant-img" src="/assets/assistant.png" alt="VENSO AI assistant" />
+          <img class="assistant-img" src="/assets/assistant.png" alt="VENSO AI assistant" fetchpriority="high" decoding="async" />
           <div class="floating-card card-chat">
             <span class="mini-label" data-i18n="hero.card1Label">Клиент</span>
             <strong data-i18n="hero.card1Title">Нужен букет сегодня</strong>
@@ -110,7 +110,7 @@
           <p data-i18n="hands.text">Менеджер видит важные сделки, владелец — цифры, клиент — быстрый и понятный сервис. AI работает между ними как точный операционный слой.</p>
         </div>
         <div class="hands-visual">
-          <img src="/assets/hands.png" alt="Human and robot hands" />
+          <img src="/assets/hands.png" alt="Human and robot hands" loading="lazy" decoding="async" />
           <div class="spark"></div>
         </div>
       </div>
@@ -201,7 +201,7 @@
           <div class="investor-cards" id="investorCards"></div>
         </div>
         <div class="portrait-card">
-          <img src="/assets/cyber-portrait.png" alt="Cyber art portrait" />
+          <img src="/assets/cyber-portrait.png" alt="Cyber art portrait" loading="lazy" decoding="async" />
           <div class="portrait-caption" data-i18n="investor.caption">Классический сервис + новая интеллектуальная инфраструктура</div>
         </div>
       </div>

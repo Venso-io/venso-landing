@@ -64,7 +64,7 @@ const FALLBACK_TARIFFS = [
 
 const t = {
   ru: {
-    nav: { features: 'Возможности', how: 'Как это работает', demo: 'Демо', integrations: 'Интеграции', pricing: 'Тарифы', investors: 'Инвесторам', login: 'Войти', cta: 'Начать бесплатно' },
+    nav: { features: 'Возможности', how: 'Как это работает', demo: 'Демо', integrations: 'Интеграции', pricing: 'Тарифы', investors: 'Инвесторам', login: 'Войти', cta: 'Начать бесплатно', primaryNav: 'Главная навигация', mobileNav: 'Мобильная навигация', language: 'Выбор языка', menuOpen: 'Открыть меню', menuClose: 'Закрыть меню' },
     hero: {
       eyebrow: 'AI SaaS для продаж, склада и сервиса',
       title: 'AI-продавец, который продаёт, учитывает и закрывает заявки',
@@ -101,7 +101,7 @@ const t = {
     footer: { text: 'AI-продавец нового поколения для продаж, учета и клиентского сервиса.', product: 'Продукт', company: 'Компания', contact: 'Контакты', support: 'Связь', city: 'Астана, Казахстан', rights: 'Все права защищены.' }
   },
   kk: {
-    nav: { features: 'Мүмкіндіктер', how: 'Қалай жұмыс істейді', demo: 'Демо', integrations: 'Интеграциялар', pricing: 'Тарифтер', investors: 'Инвесторларға', login: 'Кіру', cta: 'Тегін бастау' },
+    nav: { features: 'Мүмкіндіктер', how: 'Қалай жұмыс істейді', demo: 'Демо', integrations: 'Интеграциялар', pricing: 'Тарифтер', investors: 'Инвесторларға', login: 'Кіру', cta: 'Тегін бастау', primaryNav: 'Негізгі навигация', mobileNav: 'Мобильді навигация', language: 'Тілді таңдау', menuOpen: 'Мәзірді ашу', menuClose: 'Мәзірді жабу' },
     hero: {
       eyebrow: 'Сату, қойма және сервиске арналған AI SaaS',
       title: 'Сататын, есепке алатын және өтінімді жабатын AI-сатушы',
@@ -125,7 +125,7 @@ const t = {
     footer: { text: 'Сату, есеп және клиенттік сервиске арналған жаңа буын AI-сатушы.', product: 'Өнім', company: 'Компания', contact: 'Байланыс', support: 'Байланыс', city: 'Астана, Қазақстан', rights: 'Барлық құқықтар қорғалған.' }
   },
   en: {
-    nav: { features: 'Features', how: 'How it works', demo: 'Demo', integrations: 'Integrations', pricing: 'Pricing', investors: 'Investors', login: 'Login', cta: 'Start free' },
+    nav: { features: 'Features', how: 'How it works', demo: 'Demo', integrations: 'Integrations', pricing: 'Pricing', investors: 'Investors', login: 'Login', cta: 'Start free', primaryNav: 'Main navigation', mobileNav: 'Mobile navigation', language: 'Choose language', menuOpen: 'Open menu', menuClose: 'Close menu' },
     hero: {
       eyebrow: 'AI SaaS for sales, inventory and service',
       title: 'An AI sales operator that sells, tracks and closes requests',
@@ -1736,7 +1736,19 @@ function setLang(lang) {
   document.documentElement.lang = lang;
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = tr(el.dataset.i18n); });
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.setAttribute('placeholder', tr(el.dataset.i18nPlaceholder)); });
-  document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    const active = btn.dataset.lang === lang;
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-pressed', String(active));
+  });
+  document.querySelectorAll('[data-i18n-aria-label]').forEach(el => {
+    el.setAttribute('aria-label', tr(el.dataset.i18nAriaLabel));
+  });
+  const menuBtn = document.getElementById('menuBtn');
+  if (menuBtn) {
+    const open = document.getElementById('mobileMenu')?.classList.contains('open') ?? false;
+    menuBtn.setAttribute('aria-label', tr(open ? 'nav.menuClose' : 'nav.menuOpen'));
+  }
   renderStaticSections();
   renderScenarios();
   renderPricing();
@@ -1955,8 +1967,24 @@ function initHeader() {
   document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLang(btn.dataset.lang)));
   const menuBtn = document.getElementById('menuBtn');
   const mobileMenu = document.getElementById('mobileMenu');
-  menuBtn?.addEventListener('click', () => mobileMenu.classList.toggle('open'));
-  mobileMenu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+  const setMenuOpen = (open) => {
+    if (!mobileMenu || !menuBtn) return;
+    mobileMenu.classList.toggle('open', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+    menuBtn.setAttribute('aria-label', tr(open ? 'nav.menuClose' : 'nav.menuOpen'));
+  };
+  menuBtn?.addEventListener('click', () => setMenuOpen(!mobileMenu?.classList.contains('open')));
+  mobileMenu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenuOpen(false)));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && mobileMenu?.classList.contains('open')) {
+      setMenuOpen(false);
+      menuBtn?.focus();
+    }
+  });
+  document.addEventListener('pointerdown', event => {
+    if (!mobileMenu?.classList.contains('open')) return;
+    if (!menuBtn?.contains(event.target) && !mobileMenu.contains(event.target)) setMenuOpen(false);
+  });
 }
 
 function initCursorGlow() {
