@@ -1002,3 +1002,18 @@ img { display: block; max-width: 100%; }
 .typed-text::after { content: ""; display: inline-block; width: 7px; height: 1em; margin-left: 3px; vertical-align: -2px; background: rgba(255,255,255,.72); animation: caretBlink .8s steps(2, start) infinite; }
 @keyframes caretBlink { 50% { opacity: 0; } }
 .rec-card, .auto-item { opacity: 0; transform: translateY(10px); animation: messageIn .45s ease forwards; }
+
+/* Small-phone containment: avoid a form/grid intrinsic minimum wider than the viewport. */
+@media (max-width: 720px) {
+  .cta-grid, .lead-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cta-copy, .lead-form, .cta-grid > *, .lead-form > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .lead-form input, .lead-form select, .lead-form textarea {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
