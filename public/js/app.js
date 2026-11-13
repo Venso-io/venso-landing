@@ -64,12 +64,12 @@ const FALLBACK_TARIFFS = [
 
 const t = {
   ru: {
-    nav: { features: 'Возможности', how: 'Как это работает', demo: 'Демо', integrations: 'Интеграции', pricing: 'Тарифы', investors: 'Инвесторам', login: 'Войти', cta: 'Начать бесплатно', primaryNav: 'Главная навигация', mobileNav: 'Мобильная навигация', language: 'Выбор языка', menuOpen: 'Открыть меню', menuClose: 'Закрыть меню' },
+    nav: { features: 'Возможности', how: 'Как это работает', demo: 'Демо', integrations: 'Интеграции', pricing: 'Тарифы', investors: 'Инвесторам', login: 'Войти', cta: 'Зарегистрироваться', primaryNav: 'Главная навигация', mobileNav: 'Мобильная навигация', language: 'Выбор языка', menuOpen: 'Открыть меню', menuClose: 'Закрыть меню' },
     hero: {
-      eyebrow: 'AI SaaS для продаж, склада и сервиса',
-      title: 'AI-продавец, который продаёт, учитывает и закрывает заявки',
+      eyebrow: 'Платформа для управления продажами',
+      title: 'Продажи и обращения клиентов в единой системе',
       subtitle: 'VENSO объединяет диалогового ассистента, электронный склад, аналитику продаж и интеграции с бухгалтерией, CRM и банками.',
-      demo: 'Запросить демо', try: 'Посмотреть в действии', signalStock: 'Склад', signalBank: 'Банк',
+      demo: 'Зарегистрироваться', try: 'Посмотреть в действии', signalStock: 'Склад', signalBank: 'Банк',
       card1Label: 'Клиент', card1Title: 'Нужен букет сегодня', card1Text: 'VENSO уже подбирает варианты',
       card2Label: 'Заказ', card2Title: 'Оплата готова', card2Text: 'Склад, CRM и банк синхронизированы'
     },
@@ -87,7 +87,7 @@ const t = {
     verticals: { kicker: 'Для каких бизнесов', title: 'Запускается под конкретную нишу, а не “для всех”' },
     integrations: {
       kicker: 'Интеграции', title: 'VENSO подключается к каналам продаж и системам учета',
-      text: 'Ассистент не висит отдельно: он передаёт заявки в CRM, резервирует товары на складе, готовит документы и помогает закрывать оплату через банковские сценарии.'
+      text: 'Работайте с обращениями, заказами и остатками в едином процессе. Подключайте доступные интеграции с CRM, складскими и платёжными системами.'
     },
     pricing: { kicker: 'Тарифы', title: 'Прозрачная модель для запуска и масштабирования', text: '7 дней бесплатно: подключим демо-сценарий, покажем диалоги, склад, акции и контроль исполнения.' },
     investor: {
@@ -95,18 +95,18 @@ const t = {
       text: 'Продуктовая модель сочетает подписку, отраслевые шаблоны, интеграционный слой и накопление знаний о продажах в разных вертикалях.',
       caption: 'Классический сервис + новая интеллектуальная инфраструктура'
     },
-    proof: { kicker: 'Социальное доверие', title: 'Понятный продукт для бизнеса, убедительный — для партнёров' },
+    proof: { kicker: 'Социальное доверие', title: 'Инструменты для ежедневной работы команды' },
     lead: { kicker: 'Запуск', title: 'Покажем, как VENSO может продавать в вашем бизнесе', text: 'Оставьте заявку — подготовим демонстрационный сценарий под вашу нишу, ассортимент и каналы коммуникаций.' },
     form: { name: 'Имя', phone: 'Телефон', company: 'Компания', plan: 'Интересующий тариф', message: 'Что хотите автоматизировать?', submit: 'Получить бесплатный запуск', note: 'Нажимая кнопку, вы отправляете заявку команде VENSO.', success: 'Заявка отправлена. Мы свяжемся с вами и подготовим демо-сценарий.', error: 'Не удалось отправить заявку. Проверьте имя и телефон.', sending: 'Отправляем заявку...', namePh: 'Алина', phonePh: '+7 771 996 70 23', companyPh: 'Название бизнеса', messagePh: 'Например: заявки из WhatsApp, склад, CRM, оплата' },
     footer: { text: 'AI-продавец нового поколения для продаж, учета и клиентского сервиса.', product: 'Продукт', company: 'Компания', contact: 'Контакты', support: 'Связь', city: 'Астана, Казахстан', rights: 'Все права защищены.' }
   },
   kk: {
-    nav: { features: 'Мүмкіндіктер', how: 'Қалай жұмыс істейді', demo: 'Демо', integrations: 'Интеграциялар', pricing: 'Тарифтер', investors: 'Инвесторларға', login: 'Кіру', cta: 'Тегін бастау', primaryNav: 'Негізгі навигация', mobileNav: 'Мобильді навигация', language: 'Тілді таңдау', menuOpen: 'Мәзірді ашу', menuClose: 'Мәзірді жабу' },
+    nav: { features: 'Мүмкіндіктер', how: 'Қалай жұмыс істейді', demo: 'Демо', integrations: 'Интеграциялар', pricing: 'Тарифтер', investors: 'Инвесторларға', login: 'Кіру', cta: 'Тіркелу', primaryNav: 'Негізгі навигация', mobileNav: 'Мобильді навигация', language: 'Тілді таңдау', menuOpen: 'Мәзірді ашу', menuClose: 'Мәзірді жабу' },
     hero: {
       eyebrow: 'Сату, қойма және сервиске арналған AI SaaS',
       title: 'Сататын, есепке алатын және өтінімді жабатын AI-сатушы',
       subtitle: 'VENSO диалогтық ассистентті, электрондық қойманы, сатылым аналитикасын және бухгалтерия, CRM, банк интеграцияларын біріктіреді.',
-      demo: 'Демо сұрау', try: 'Іс жүзінде көру', signalStock: 'Қойма', signalBank: 'Банк',
+      demo: 'Тіркелу', try: 'Іс жүзінде көру', signalStock: 'Қойма', signalBank: 'Банк',
       card1Label: 'Клиент', card1Title: 'Бүгін гүл шоғы керек', card1Text: 'VENSO нұсқаларды таңдап жатыр',
       card2Label: 'Тапсырыс', card2Title: 'Төлем дайын', card2Text: 'Қойма, CRM және банк синхрондалды'
     },
@@ -125,12 +125,12 @@ const t = {
     footer: { text: 'Сату, есеп және клиенттік сервиске арналған жаңа буын AI-сатушы.', product: 'Өнім', company: 'Компания', contact: 'Байланыс', support: 'Байланыс', city: 'Астана, Қазақстан', rights: 'Барлық құқықтар қорғалған.' }
   },
   en: {
-    nav: { features: 'Features', how: 'How it works', demo: 'Demo', integrations: 'Integrations', pricing: 'Pricing', investors: 'Investors', login: 'Login', cta: 'Start free', primaryNav: 'Main navigation', mobileNav: 'Mobile navigation', language: 'Choose language', menuOpen: 'Open menu', menuClose: 'Close menu' },
+    nav: { features: 'Features', how: 'How it works', demo: 'Demo', integrations: 'Integrations', pricing: 'Pricing', investors: 'Investors', login: 'Login', cta: 'Register', primaryNav: 'Main navigation', mobileNav: 'Mobile navigation', language: 'Choose language', menuOpen: 'Open menu', menuClose: 'Close menu' },
     hero: {
       eyebrow: 'AI SaaS for sales, inventory and service',
       title: 'An AI sales operator that sells, tracks and closes requests',
       subtitle: 'VENSO combines a conversational assistant, digital inventory, sales analytics and integrations with accounting, CRM and banking workflows.',
-      demo: 'Request demo', try: 'See it live', signalStock: 'Inventory', signalBank: 'Bank',
+      demo: 'Register', try: 'See it live', signalStock: 'Inventory', signalBank: 'Bank',
       card1Label: 'Client', card1Title: 'Need flowers today', card1Text: 'VENSO is selecting options',
       card2Label: 'Order', card2Title: 'Payment ready', card2Text: 'Inventory, CRM and bank are synced'
     },
@@ -143,7 +143,7 @@ const t = {
     integrations: { kicker: 'Integrations', title: 'VENSO connects to sales channels and accounting systems', text: 'The assistant is not isolated: it sends requests to CRM, reserves stock, prepares documents and supports closing payments through bank workflows.' },
     pricing: { kicker: 'Pricing', title: 'A clear model for launch and scale', text: '7 days free: we launch a demo scenario and show dialogs, inventory, promos and execution control.' },
     investor: { kicker: 'For investors', title: 'VENSO is designed as scalable AI SaaS, not a one-off automation', text: 'The product model combines subscriptions, vertical templates, integration layers and accumulated sales knowledge across industries.', caption: 'Classic service + new intelligent infrastructure' },
-    proof: { kicker: 'Social proof', title: 'Clear for businesses, convincing for partners' },
+    proof: { kicker: 'Social proof', title: 'Tools for day-to-day business operations' },
     lead: { kicker: 'Launch', title: 'We will show how VENSO can sell in your business', text: 'Leave a request — we will prepare a demo scenario for your industry, catalog and communication channels.' },
     form: { name: 'Name', phone: 'Phone', company: 'Company', plan: 'Plan of interest', message: 'What do you want to automate?', submit: 'Get free launch', note: 'By clicking the button, you send a request to the VENSO team.', success: 'Request sent. We will contact you and prepare a demo scenario.', error: 'Could not send the request. Check name and phone.', sending: 'Sending request...', namePh: 'Alina', phonePh: '+7 771 996 70 23', companyPh: 'Business name', messagePh: 'For example: WhatsApp requests, inventory, CRM, payment' },
     footer: { text: 'Next-generation AI sales operator for sales, accounting and customer service.', product: 'Product', company: 'Company', contact: 'Contacts', support: 'Contact', city: 'Astana, Kazakhstan', rights: 'All rights reserved.' }
@@ -1810,14 +1810,13 @@ const INTEGRATION_ICONS=['message','globe','people','receipt','wallet','plug','c
 
 function renderStaticSections() {
   const data = activeCopy();
-  fill('metricsGrid', data.metrics.map(([value, text]) => card('metric-card reveal', `<span>${value}</span><span>${text}</span>`)));
+  fill('metricsGrid', data.metrics.filter(([value]) => !/^3(?: languages| языка| тіл)/i.test(String(value))).map(([value, text]) => card('metric-card reveal', `<span>${value}</span><span>${text}</span>`)));
   fill('featureGrid', data.features.map(([, title, text], index) => card('feature-card reveal', `<div class="icon-box">${siteIcon(FEATURE_ICONS[index])}</div><h3>${title}</h3><p>${text}</p>`)));
   fill('bentoGrid', data.bento.map(([size, num, title, text]) => card(`bento-card ${size} reveal`, `<span class="bento-value">${num}</span><h3>${title}</h3><p>${text}</p>`)));
   fill('timeline', data.steps.map(([num, title, text]) => card('step-card reveal', `<div class="step-num">${num}</div><h3>${title}</h3><p>${text}</p>`)));
   fill('verticalGrid', data.verticals.map(([, title, text], index) => card('vertical-card reveal', `<div class="visual-dot">${siteIcon(VERTICAL_ICONS[index])}</div><h3>${title}</h3><p>${text}</p>`)));
   fill('integrationGrid', data.integrations.map(([, title, text], index) => card('integration-card reveal', `<div class="visual-dot">${siteIcon(INTEGRATION_ICONS[index])}</div><h3>${title}</h3><p>${text}</p>`)));
   fill('investorCards', data.investors.map(([title, text]) => card('investor-mini reveal', `<strong>${title}</strong><span>${text}</span>`)));
-  fill('proofGrid', data.proofs.map(([name, role, quote]) => card('proof-card reveal', `<strong>${name}</strong><small>${role}</small><div class="stars-rating">★★★★★</div><p>“${quote}”</p>`)));
   observeReveal();
 }
 
@@ -1918,7 +1917,7 @@ function renderPricing() {
       <div class="price"><strong>${escapeHtml(tariff.price)}</strong><span>${escapeHtml(tariff.period || '')}</span></div>
       <p>${escapeHtml(tariff.description || '')}</p>
       <ul>${(tariff.features || []).map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
-      <a class="${buttonClass}" href="#lead" data-plan="${escapeHtml(tariff.name)}">${tr('nav.cta')}</a>
+      <a class="${buttonClass}" href="/register" data-account-link="register" data-plan="${escapeHtml(tariff.name)}">${tr('nav.cta')}</a>
     `);
     // System API does not promise a free trial or promotional badge.
     if (tariff.source === 'system') el.querySelector('.pricing-badge')?.remove();
@@ -1930,6 +1929,7 @@ function renderPricing() {
       planSelect.appendChild(opt);
     }
   });
+  initAccountLinks(root);
   root.querySelectorAll('[data-plan]').forEach(a => a.addEventListener('click', () => {
     if (planSelect) planSelect.value = a.dataset.plan;
   }));
@@ -1981,6 +1981,7 @@ function typeInto(element, text, speed = 18) {
     target.textContent = text.slice(0, i);
     i += 1;
     if (i <= text.length) schedule(tick, speed + Math.random() * 10);
+    else target.classList.add('done');
   }
   tick();
 }
@@ -1998,7 +1999,7 @@ function renderScenarioContent() {
       schedule(() => {
         typing.classList.remove('typing');
         typing.innerHTML = `<small>${type === 'ai' ? 'VENSO' : tr('hero.card1Label')}</small>`;
-        typeInto(typing, escapeHtml(text), 12);
+        typeInto(typing, text, 12);
         chat.scrollTop = chat.scrollHeight;
       }, type === 'ai' ? 650 : 380);
     }, delay);
@@ -2111,6 +2112,15 @@ function escapeHtml(str) {
   return String(str || '').replace(/[&<>'"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#039;', '"': '&quot;' }[ch]));
 }
 
+function accountUrl(route) {
+  return (['localhost','127.0.0.1'].includes(location.hostname)
+    ? location.protocol + '//' + location.hostname + ':4000'
+    : 'https://app.venso.ai') + '/' + route;
+}
+function initAccountLinks(root = document) {
+  root.querySelectorAll('[data-account-link]').forEach(a => { a.href = accountUrl(a.dataset.accountLink); });
+}
+initAccountLinks();
 initHeader();
 initCursorGlow();
 setLang(state.lang);

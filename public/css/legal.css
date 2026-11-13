@@ -38,3 +38,26 @@ body.legal-page {
 @media(max-width:800px){.legal-layout{grid-template-columns:minmax(0,1fr);padding:24px 16px 50px;gap:18px}.legal-nav-wrap{position:static}.legal-nav{flex-direction:row;align-items:center;overflow-x:auto;white-space:nowrap;scrollbar-width:thin}.legal-nav-heading{display:none}.legal-nav a{flex:0 0 auto}.legal-paper{padding:29px 24px}.legal-topbar-inner{padding-inline:16px;gap:12px}}
 @media(max-width:450px){.legal-topbar-inner{min-height:65px;gap:10px}.legal-wordmark{font-size:17px}.legal-wordmark img{width:30px;height:26px}.legal-back{font-size:11px}.legal-languages button{min-width:29px;height:28px;font-size:11px}.legal-paper{padding:25px 18px}.legal-layout{padding:17px 12px 36px}.legal-section p{font-size:13px}}
 @media(prefers-reduced-motion:reduce){.legal-page *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+.legal-page.shared-site-shell .site-header { position:fixed; }
+.legal-page.shared-site-shell .site-footer { position:relative; z-index:3; text-align:left; }
+.legal-page.shared-site-shell { padding-top:132px; }
+.legal-page.shared-site-shell .legal-layout { padding-top:0; }
+.legal-page.shared-site-shell .legal-paper h1 { margin-top:0; }
+.legal-page .legal-label {display:none;}
+.legal-page .legal-nav-heading {color:var(--v-muted);}
+@media(max-width:800px){.legal-page.shared-site-shell{padding-top:106px;}.legal-page.shared-site-shell .legal-layout{padding-top:0;}}
+
+/* The imported site shell is styled as the public site, not as the legal article. */
+.legal-page.shared-site-shell .site-header a,
+.legal-page.shared-site-shell .site-footer a { color:inherit; }
+.legal-page.shared-site-shell .site-header .primary-btn { color:#fff; }
+.legal-page.shared-site-shell .site-header .desktop-nav a:hover,
+.legal-page.shared-site-shell .site-footer a:hover { color:var(--v-brand-bright); }
+
+/* Landing and legal use identical header/footer visual tokens. */
+.legal-page.shared-site-shell .site-header,
+.legal-page.shared-site-shell .site-footer { font-family:var(--font); }
+.legal-page.shared-site-shell .site-header .desktop-nav { color:var(--v-muted); }
+.legal-page.shared-site-shell .site-header .header-login { color:var(--v-muted); }
+.legal-page.shared-site-shell .site-header .header-login:hover { color:var(--v-text); }
