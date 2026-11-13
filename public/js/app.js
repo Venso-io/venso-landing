@@ -150,6 +150,26 @@ const t = {
   }
 };
 
+// Legal navigation and explicit lead-form consent: RU / KK / EN.
+const LEGAL_COPY = {
+  ru: {
+    footer: { legal: 'Документы', terms: 'Пользовательское соглашение', offer: 'Публичная оферта', privacy: 'Политика конфиденциальности', consent: 'Согласие на обработку данных', cookies: 'Политика cookie' },
+    form: { privacyLeadPrefix: 'Даю согласие на обработку персональных данных и ознакомлен(а) с документами:' }
+  },
+  kk: {
+    footer: { legal: 'Заңды құжаттар', terms: 'Пайдаланушы келісімі', offer: 'Жария оферта', privacy: 'Құпиялылық саясаты', consent: 'Деректерді өңдеуге келісім', cookies: 'Cookie саясаты' },
+    form: { privacyLeadPrefix: 'Жеке деректерімді өңдеуге келісемін және құжаттармен таныстым:' }
+  },
+  en: {
+    footer: { legal: 'Legal documents', terms: 'Terms of Service', offer: 'Public Offer', privacy: 'Privacy Policy', consent: 'Data Processing Consent', cookies: 'Cookie Policy' },
+    form: { privacyLeadPrefix: 'I consent to the processing of my personal data and have reviewed the documents:' }
+  }
+};
+for (const lang of Object.keys(LEGAL_COPY)) {
+  Object.assign(t[lang].footer, LEGAL_COPY[lang].footer);
+  Object.assign(t[lang].form, LEGAL_COPY[lang].form);
+}
+
 const copy = {
   "ru": {
     "metrics": [
@@ -2017,6 +2037,11 @@ function initLeadForm() {
   if (!form) return;
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    const privacyConsent = form.querySelector('#leadDataConsent');
+    if (privacyConsent && !privacyConsent.checked) {
+      privacyConsent.reportValidity();
+      return;
+    }
     const payload = Object.fromEntries(new FormData(form).entries());
     payload.lang = state.lang;
     payload.page = location.href;
