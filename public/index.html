@@ -3,13 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Change this same-origin path to /api/v1/tariffs when public Venso API routing is ready. -->
+  <meta name="venso-public-tariffs-endpoint" content="/api/tariffs" />
   <meta name="theme-color" content="#050713" />
   <meta name="description" content="VENSO — AI-продавец нового поколения: диалоги, электронный склад, CRM, бухгалтерия, банки и аналитика в одном контуре." />
   <title>VENSO — AI-продавец нового поколения</title>
-  <link rel="icon" href="/assets/logo.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="256x256" href="/favicon.png" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="preload" as="image" href="/assets/assistant.png" />
-  <link rel="preload" as="image" href="/assets/hands.png" />
   <link rel="stylesheet" href="/css/styles.css?v=4-i18n-demo-20260617" />
+  <link rel="stylesheet" href="/css/design-system.css?v=landing-review-20261113-3" />
 </head>
 <body>
   <div class="noise"></div>
@@ -19,38 +24,39 @@
 
   <header class="site-header" id="top">
     <a class="brand" href="#top" aria-label="VENSO home">
-      <img src="/assets/logo.png" alt="VENSO" />
+      <span class="venso-site-lockup" aria-label="Venso"><svg class="venso-site-mark" viewBox="0 0 82 42" aria-hidden="true" focusable="false"><g transform="translate(0 4) scale(.18) translate(-369 -408)"><path d="M394.807 477.74C411.535 442.172 454.196 408.25 503.401 416.212C551.112 423.546 585.715 454.739 612.224 485.732C613.195 486.887 614.159 488.02 615.114 489.13C638.395 516.134 664.847 539.403 691.693 539.713C719.392 540.963 751.297 514.298 774.217 483.409C779.44 476.454 784.389 469.171 789 461.525C787.783 470.373 785.913 479.198 783.424 487.937C771.978 525.656 749.686 570.73 696.636 582.493C642.158 591.238 601.197 555.106 574.192 524.362C573.052 523.038 571.914 521.69 570.776 520.317C527.199 464.221 464.115 424.906 402.99 483.928C396.606 489.692 390.547 496.07 385 503.025C387.338 494.436 390.647 485.933 394.807 477.74Z" fill="currentColor"/><circle cx="392" cy="525" r="23" fill="currentColor"/></g></svg><span class="venso-site-word">VENSO</span></span>
     </a>
-    <nav class="desktop-nav" aria-label="Main navigation">
-      <a href="#features" data-i18n="nav.features">Возможности</a>
+    <nav class="desktop-nav" aria-label="Главная навигация" data-i18n-aria-label="nav.primaryNav">
+      <a href="#how" data-i18n="nav.features">Возможности</a>
       <a href="#how" data-i18n="nav.how">Как это работает</a>
       <a href="#demo" data-i18n="nav.demo">Демо</a>
       <a href="#integrations" data-i18n="nav.integrations">Интеграции</a>
       <a href="#pricing" data-i18n="nav.pricing">Тарифы</a>
-      <a href="#investors" data-i18n="nav.investors">Инвесторам</a>
     </nav>
     <div class="header-actions">
-      <div class="lang-switch" aria-label="Language switcher">
+      <div class="lang-switch" aria-label="Выбор языка" data-i18n-aria-label="nav.language">
         <button class="lang-btn active" data-lang="ru">RU</button>
         <button class="lang-btn" data-lang="kk">KZ</button>
         <button class="lang-btn" data-lang="en">EN</button>
       </div>
-      <a class="primary-btn sm" href="#lead" data-i18n="nav.cta">Начать бесплатно</a>
-      <button class="menu-btn" id="menuBtn" aria-label="Open menu"><span></span><span></span></button>
+      <a class="primary-btn sm" href="/register" data-account-link="register" data-i18n="nav.cta">Зарегистрироваться</a>
+      <a class="header-login" href="/login" data-account-link="login" data-i18n="nav.login">Войти</a>
+      <button type="button" class="menu-btn" id="menuBtn" aria-label="Открыть меню" aria-controls="mobileMenu" aria-expanded="false"><span></span><span></span></button>
     </div>
-    <div class="mobile-menu" id="mobileMenu">
-      <div class="mobile-lang-switch" aria-label="Language switcher">
+    <nav class="mobile-menu" id="mobileMenu" aria-label="Мобильная навигация" data-i18n-aria-label="nav.mobileNav">
+      <div class="mobile-lang-switch" aria-label="Выбор языка" data-i18n-aria-label="nav.language">
         <button class="lang-btn active" data-lang="ru">RU</button>
         <button class="lang-btn" data-lang="kk">KZ</button>
         <button class="lang-btn" data-lang="en">EN</button>
       </div>
-      <a href="#features" data-i18n="nav.features">Возможности</a>
+      <a href="#how" data-i18n="nav.features">Возможности</a>
       <a href="#how" data-i18n="nav.how">Как это работает</a>
       <a href="#demo" data-i18n="nav.demo">Демо</a>
       <a href="#integrations" data-i18n="nav.integrations">Интеграции</a>
       <a href="#pricing" data-i18n="nav.pricing">Тарифы</a>
-      <a href="#investors" data-i18n="nav.investors">Инвесторам</a>
-    </div>
+      <a href="/login" data-account-link="login" data-i18n="nav.login">Войти</a>
+      <a href="/register" data-account-link="register" data-i18n="nav.cta">Зарегистрироваться</a>
+    </nav>
   </header>
 
   <main>
@@ -62,7 +68,7 @@
           <h1 data-i18n="hero.title">AI-продавец, который продаёт, учитывает и закрывает заявки</h1>
           <p class="hero-sub" data-i18n="hero.subtitle">VENSO объединяет диалогового ассистента, электронный склад, аналитику продаж и интеграции с бухгалтерией, CRM и банками.</p>
           <div class="hero-actions">
-            <a class="primary-btn" href="#lead" data-i18n="hero.demo">Запросить демо</a>
+            <a class="primary-btn" href="/register" data-account-link="register" data-i18n="hero.demo">Зарегистрироваться</a>
             <a class="ghost-btn" href="#demo" data-i18n="hero.try">Посмотреть в действии</a>
           </div>
           <div class="signal-row">
@@ -72,7 +78,7 @@
         <div class="hero-visual reveal delay-1" aria-label="AI assistant visual">
           <div class="assistant-orbit orbit-a"></div>
           <div class="assistant-orbit orbit-b"></div>
-          <img class="assistant-img" src="/assets/assistant.png" alt="VENSO AI assistant" />
+          <img class="assistant-img" src="/assets/assistant.png" alt="VENSO AI assistant" fetchpriority="high" decoding="async" />
           <div class="floating-card card-chat">
             <span class="mini-label" data-i18n="hero.card1Label">Клиент</span>
             <strong data-i18n="hero.card1Title">Нужен букет сегодня</strong>
@@ -88,16 +94,7 @@
       <div class="container metrics-grid reveal delay-2" id="metricsGrid"></div>
     </section>
 
-    <section class="section-pad compact" id="features">
-      <div class="container">
-        <div class="section-head reveal">
-          <span class="section-kicker" data-i18n="what.kicker">Что это такое</span>
-          <h2 data-i18n="what.title">VENSO — не просто чат-бот. Это операционный контур продаж.</h2>
-          <p data-i18n="what.text">Ассистент отвечает клиентам, знает ассортимент, видит остатки, создаёт заявки и передаёт данные в нужные системы.</p>
-        </div>
-        <div class="feature-grid" id="featureGrid"></div>
-      </div>
-    </section>
+
 
     <section class="hands-section section-pad compact">
       <div class="container hands-card reveal">
@@ -107,7 +104,8 @@
           <p data-i18n="hands.text">Менеджер видит важные сделки, владелец — цифры, клиент — быстрый и понятный сервис. AI работает между ними как точный операционный слой.</p>
         </div>
         <div class="hands-visual">
-          <img src="/assets/hands.png" alt="Human and robot hands" />
+          <img class="hands-half hands-half--robot" src="/assets/hands.png" alt="Человек и робот соединяют руки" loading="lazy" decoding="async" />
+          <img class="hands-half hands-half--human" src="/assets/hands.png" alt="" aria-hidden="true" loading="lazy" decoding="async" />
           <div class="spark"></div>
         </div>
       </div>
@@ -117,7 +115,7 @@
       <div class="container">
         <div class="section-head reveal">
           <span class="section-kicker" data-i18n="platform.kicker">Платформа</span>
-          <h2 data-i18n="platform.title">В одном интерфейсе: продажи, склад, интеграции и аналитика</h2>
+          <h2 class="platform-heading" data-i18n="platform.title">В одном интерфейсе: продажи, склад, интеграции и аналитика</h2>
         </div>
         <div class="bento-grid" id="bentoGrid"></div>
       </div>
@@ -157,15 +155,7 @@
       </div>
     </section>
 
-    <section class="section-pad compact">
-      <div class="container">
-        <div class="section-head reveal">
-          <span class="section-kicker" data-i18n="verticals.kicker">Для каких бизнесов</span>
-          <h2 data-i18n="verticals.title">Запускается под конкретную нишу, а не “для всех”</h2>
-        </div>
-        <div class="vertical-grid" id="verticalGrid"></div>
-      </div>
-    </section>
+
 
     <section class="section-pad compact" id="integrations">
       <div class="container integrations-panel reveal">
@@ -183,38 +173,17 @@
         <div class="section-head reveal">
           <span class="section-kicker" data-i18n="pricing.kicker">Тарифы</span>
           <h2 data-i18n="pricing.title">Прозрачная модель для запуска и масштабирования</h2>
-          <p data-i18n="pricing.text">7 дней бесплатно: подключим демо-сценарий, покажем диалоги, склад, акции и контроль исполнения.</p>
+          <p data-i18n="pricing.text">Бесплатный пробный период: подключим демо-сценарий, покажем диалоги, склад, акции и контроль исполнения.</p>
         </div>
         <div class="pricing-grid" id="pricingGrid"></div>
       </div>
     </section>
 
-    <section class="section-pad investor-section" id="investors">
-      <div class="container investor-grid reveal">
-        <div>
-          <span class="section-kicker" data-i18n="investor.kicker">Для инвесторов</span>
-          <h2 data-i18n="investor.title">VENSO строится как масштабируемый AI SaaS, а не разовая автоматизация</h2>
-          <p data-i18n="investor.text">Продуктовая модель сочетает подписку, отраслевые шаблоны, интеграционный слой и накопление знаний о продажах в разных вертикалях.</p>
-          <div class="investor-cards" id="investorCards"></div>
-        </div>
-        <div class="portrait-card">
-          <img src="/assets/cyber-portrait.png" alt="Cyber art portrait" />
-          <div class="portrait-caption" data-i18n="investor.caption">Классический сервис + новая интеллектуальная инфраструктура</div>
-        </div>
-      </div>
-    </section>
 
-    <section class="section-pad compact">
-      <div class="container">
-        <div class="section-head reveal">
-          <span class="section-kicker" data-i18n="proof.kicker">Социальное доверие</span>
-          <h2 data-i18n="proof.title">Понятный продукт для бизнеса, убедительный — для партнёров</h2>
-        </div>
-        <div class="proof-grid" id="proofGrid"></div>
-      </div>
-    </section>
 
-    <section class="section-pad cta-section" id="lead">
+
+
+    <section class="section-pad cta-section" id="lead" hidden>
       <div class="container cta-grid reveal">
         <div class="cta-copy">
           <span class="section-kicker" data-i18n="lead.kicker">Запуск</span>
@@ -227,6 +196,15 @@
           <label><span data-i18n="form.company">Компания</span><input name="company" placeholder="Название бизнеса" data-i18n-placeholder="form.companyPh" /></label>
           <label><span data-i18n="form.plan">Интересующий тариф</span><select name="plan" id="planSelect"></select></label>
           <label class="wide"><span data-i18n="form.message">Что хотите автоматизировать?</span><textarea name="message" placeholder="Например: заявки из WhatsApp, склад, CRM, оплата" data-i18n-placeholder="form.messagePh"></textarea></label>
+          <div class="legal-lead-consent wide">
+            <input type="checkbox" id="leadDataConsent" name="personalDataConsent" value="true" required aria-describedby="leadConsentLinks" />
+            <div id="leadConsentLinks">
+              <label for="leadDataConsent" data-i18n="form.privacyLeadPrefix">Я даю согласие на обработку персональных данных и ознакомлен(а) с документами:</label>
+              <a href="/legal/consent.html" target="_blank" rel="noopener noreferrer" data-i18n="footer.consent">Согласие на обработку данных</a>
+              <span aria-hidden="true"> · </span>
+              <a href="/legal/privacy.html" target="_blank" rel="noopener noreferrer" data-i18n="footer.privacy">Политика конфиденциальности</a>
+            </div>
+          </div>
           <button class="primary-btn wide" type="submit" data-i18n="form.submit">Получить бесплатный запуск</button>
           <p class="form-note" id="formNote" data-i18n="form.note">Нажимая кнопку, вы отправляете заявку команде VENSO.</p>
         </form>
@@ -237,19 +215,22 @@
   <footer class="site-footer">
     <div class="container footer-grid">
       <div>
-        <img src="/assets/logo.png" alt="VENSO" />
+        <span class="venso-site-lockup" aria-label="Venso"><svg class="venso-site-mark" viewBox="0 0 82 42" aria-hidden="true" focusable="false"><g transform="translate(0 4) scale(.18) translate(-369 -408)"><path d="M394.807 477.74C411.535 442.172 454.196 408.25 503.401 416.212C551.112 423.546 585.715 454.739 612.224 485.732C613.195 486.887 614.159 488.02 615.114 489.13C638.395 516.134 664.847 539.403 691.693 539.713C719.392 540.963 751.297 514.298 774.217 483.409C779.44 476.454 784.389 469.171 789 461.525C787.783 470.373 785.913 479.198 783.424 487.937C771.978 525.656 749.686 570.73 696.636 582.493C642.158 591.238 601.197 555.106 574.192 524.362C573.052 523.038 571.914 521.69 570.776 520.317C527.199 464.221 464.115 424.906 402.99 483.928C396.606 489.692 390.547 496.07 385 503.025C387.338 494.436 390.647 485.933 394.807 477.74Z" fill="currentColor"/><circle cx="392" cy="525" r="23" fill="currentColor"/></g></svg><span class="venso-site-word">VENSO</span></span>
         <p data-i18n="footer.text">AI-продавец нового поколения для продаж, учета и клиентского сервиса.</p>
       </div>
       <div>
         <strong data-i18n="footer.product">Продукт</strong>
-        <a href="#features" data-i18n="nav.features">Возможности</a>
+        <a href="#how" data-i18n="nav.features">Возможности</a>
         <a href="#demo" data-i18n="nav.demo">Демо</a>
         <a href="#pricing" data-i18n="nav.pricing">Тарифы</a>
       </div>
-      <div>
-        <strong data-i18n="footer.company">Компания</strong>
-        <a href="#investors" data-i18n="nav.investors">Инвесторам</a>
-        <a href="#lead" data-i18n="footer.contact">Контакты</a>
+      <div class="footer-legal-col">
+        <strong data-i18n="footer.legal">Документы</strong>
+        <a href="/legal/terms.html" data-i18n="footer.terms">Пользовательское соглашение</a>
+        <a href="/legal/offer.html" data-i18n="footer.offer">Публичная оферта</a>
+        <a href="/legal/privacy.html" data-i18n="footer.privacy">Политика конфиденциальности</a>
+        <a href="/legal/consent.html" data-i18n="footer.consent">Согласие на обработку данных</a>
+        <a href="/legal/cookies.html" data-i18n="footer.cookies">Политика cookie</a>
       </div>
       <div>
         <strong data-i18n="footer.support">Связь</strong>
@@ -261,6 +242,6 @@
     <div class="footer-bottom">© 2026 VENSO. <span data-i18n="footer.rights">Все права защищены.</span></div>
   </footer>
 
-  <script src="/js/app.js?v=4-i18n-demo-20260617" defer></script>
+  <script src="/js/app.js?v=landing-review-20261113-3" defer></script>
 </body>
 </html>

@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { backendUrl, fetchBackendTariffs, hasLeadConsent, leadConsentRecord } = require('./lib/venso-api');
 
 const PORT = Number(process.env.PORT || 3010);
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'venso-admin';
@@ -10,6 +11,8 @@ const ROOT = __dirname;
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const STORE_PATH = path.join(ROOT, 'data', 'store.json');
 const sessions = new Map();
+const TARIFFS_CACHE_MS = 60 * 1000;
+let tariffsCache = { at: 0, payload: null };
 
 const mime = {
   '.html': 'text/html; charset=utf-8',
@@ -33,6 +36,8 @@ function readStore() {
 }
 
 function writeStore(store) {
+  // data/ is git-ignored, so a fresh checkout has no directory yet.
+  fs.mkdirSync(path.dirname(STORE_PATH), { recursive: true });
   fs.writeFileSync(STORE_PATH, JSON.stringify(store, null, 2), 'utf8');
 }
 
@@ -96,6 +101,27 @@ function sanitizeTariff(input) {
   };
 }
 
+/**
+ * Public tariffs. With VENSO_API_URL the backend is the source of truth
+ * (GET /api/v1/tariffs, cached for a minute); without it, or while the backend
+ * is down, tariffs saved in the local admin are served. An empty list makes the
+ * page fall back to its built-in copy of the backend seed.
+ */
+async function publicTariffs() {
+  if (backendUrl()) {
+    if (tariffsCache.payload && Date.now() - tariffsCache.at < TARIFFS_CACHE_MS) return tariffsCache.payload;
+    try {
+      const payload = { source: 'venso-api', tariffs: await fetchBackendTariffs() };
+      tariffsCache = { at: Date.now(), payload };
+      return payload;
+    } catch (error) {
+      console.warn(`Venso API tariffs unavailable: ${error.message}`);
+    }
+  }
+  const store = readStore();
+  return { source: 'landing-store', tariffs: store.tariffs || [] };
+}
+
 async function handleApi(req, res, url) {
   try {
     if (req.method === 'GET' && url.pathname === '/api/site') {
@@ -104,8 +130,7 @@ async function handleApi(req, res, url) {
     }
 
     if (req.method === 'GET' && url.pathname === '/api/tariffs') {
-      const store = readStore();
-      return send(res, 200, { tariffs: store.tariffs || [] });
+      return send(res, 200, await publicTariffs());
     }
 
     if (req.method === 'POST' && url.pathname === '/api/leads') {
@@ -125,6 +150,10 @@ async function handleApi(req, res, url) {
         userAgent: String(req.headers['user-agent'] || '').slice(0, 250)
       };
       if (!lead.name || !lead.phone) return send(res, 400, { error: 'name_and_phone_required' });
+      if (!hasLeadConsent(body)) return send(res, 400, { error: 'personal_data_consent_required' });
+      Object.assign(lead, leadConsentRecord(lead.createdAt), {
+        ip: String(req.socket.remoteAddress || '').slice(0, 64)
+      });
       const store = readStore();
       store.leads = store.leads || [];
       store.leads.unshift(lead);
@@ -205,5 +234,6 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, () => {
   console.log(`VENSO landing is running: http://localhost:${PORT}`);
   console.log(`Admin panel: http://localhost:${PORT}/admin`);
+  console.log(`Tariffs source: ${backendUrl() ? `${backendUrl()}/api/v1/tariffs` : 'local store (set VENSO_API_URL for the Venso backend)'}`);
   console.log(`Default admin password: ${ADMIN_PASSWORD === 'venso-admin' ? 'venso-admin (change via ADMIN_PASSWORD)' : '[from env]'}`);
 });

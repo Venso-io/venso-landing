@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 360" width="360" height="360" role="img" aria-label="Venso">
+  <rect width="360" height="360" rx="72" fill="#010C1E"/>
+  <g transform="translate(0 62)">
+    <path d="M42 146C58 82 120 54 167 105C210 152 258 159 318 78" fill="none" stroke="#028AE2" stroke-width="28" stroke-linecap="round"/>
+    <circle cx="42" cy="146" r="19" fill="#028AE2"/>
+  </g>
+</svg>

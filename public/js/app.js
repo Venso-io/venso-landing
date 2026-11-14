@@ -1,4 +1,4 @@
-console.info('VENSO build v4-i18n-demo-20260617 loaded');
+console.info('VENSO build v5-venso-api-tariffs-20261115 loaded');
 const state = {
   lang: localStorage.getItem('venso_lang') || 'ru',
   tariffs: [],
@@ -6,70 +6,23 @@ const state = {
   chatTimers: []
 };
 
+// Built-in copy of the backend tariff seed (V31__create_tariffs.sql), in the
+// public TariffResponseDTO shape. Shown only while /api/tariffs cannot reach the
+// Venso backend; real prices and limits always come from GET /api/v1/tariffs.
 const FALLBACK_TARIFFS = [
-  {
-    "id": "start",
-    "name": "Start",
-    "badge": "7 дней бесплатно",
-    "price": "15 000 ₸",
-    "period": "/ мес",
-    "description": "Быстрый запуск AI-продавца для одного направления и проверки спроса.",
-    "features": [
-      "7-дневный бесплатный триал",
-      "AI-продавец 24/7",
-      "До 1 000 диалогов в месяц",
-      "1 канал интеграции",
-      "Базовая база знаний",
-      "Рекомендации товаров и акций"
-    ],
-    "highlighted": false
-  },
-  {
-    "id": "pro",
-    "name": "Pro",
-    "badge": "Популярный",
-    "price": "35 000 ₸",
-    "period": "/ мес",
-    "description": "Продажи, склад, акции, CRM и контроль исполнения для растущего бизнеса.",
-    "features": [
-      "7-дневный бесплатный триал",
-      "AI-продавец 24/7",
-      "До 5 000 диалогов в месяц",
-      "До 3 каналов интеграции",
-      "Электронный склад и резервы",
-      "Настройка акций без кода",
-      "Контроль исполнения заявок"
-    ],
-    "highlighted": true
-  },
-  {
-    "id": "business",
-    "name": "Business",
-    "badge": "Для сети",
-    "price": "70 000 ₸",
-    "period": "/ мес",
-    "description": "Единый контур продаж с бухгалтерией, банками и повторными продажами.",
-    "features": [
-      "7-дневный бесплатный триал",
-      "Безлимитные диалоги",
-      "Все каналы коммуникаций",
-      "Интеграция с бухгалтерией",
-      "Банковские ссылки и закрытие заявок",
-      "База постоянных клиентов",
-      "API и кастомные сценарии"
-    ],
-    "highlighted": false
-  }
+  { code: 'start', name: { ru: 'Start', kk: 'Start', en: 'Start' }, priceKzt: 15000, periodDays: 30, maxRequests: 1000, maxChannels: 3, maxUsers: 2 },
+  { code: 'pro', name: { ru: 'Pro', kk: 'Pro', en: 'Pro' }, priceKzt: 35000, periodDays: 30, maxRequests: 4000, maxChannels: 5, maxUsers: 5 },
+  { code: 'business', name: { ru: 'Business', kk: 'Business', en: 'Business' }, priceKzt: 70000, periodDays: 30, maxRequests: 0, maxChannels: 0, maxUsers: 0 }
 ];
 
 const t = {
   ru: {
-    nav: { features: 'Возможности', how: 'Как это работает', demo: 'Демо', integrations: 'Интеграции', pricing: 'Тарифы', investors: 'Инвесторам', login: 'Войти', cta: 'Начать бесплатно' },
+    nav: { features: 'Возможности', how: 'Как это работает', demo: 'Демо', integrations: 'Интеграции', pricing: 'Тарифы', investors: 'Инвесторам', login: 'Войти', cta: 'Зарегистрироваться', primaryNav: 'Главная навигация', mobileNav: 'Мобильная навигация', language: 'Выбор языка', menuOpen: 'Открыть меню', menuClose: 'Закрыть меню' },
     hero: {
-      eyebrow: 'AI SaaS для продаж, склада и сервиса',
-      title: 'AI-продавец, который продаёт, учитывает и закрывает заявки',
+      eyebrow: 'Платформа для управления продажами',
+      title: 'Продажи и обращения клиентов в единой системе',
       subtitle: 'VENSO объединяет диалогового ассистента, электронный склад, аналитику продаж и интеграции с бухгалтерией, CRM и банками.',
-      demo: 'Запросить демо', try: 'Посмотреть в действии', signalStock: 'Склад', signalBank: 'Банк',
+      demo: 'Зарегистрироваться', try: 'Посмотреть в действии', signalStock: 'Склад', signalBank: 'Банк',
       card1Label: 'Клиент', card1Title: 'Нужен букет сегодня', card1Text: 'VENSO уже подбирает варианты',
       card2Label: 'Заказ', card2Title: 'Оплата готова', card2Text: 'Склад, CRM и банк синхронизированы'
     },
@@ -87,26 +40,26 @@ const t = {
     verticals: { kicker: 'Для каких бизнесов', title: 'Запускается под конкретную нишу, а не “для всех”' },
     integrations: {
       kicker: 'Интеграции', title: 'VENSO подключается к каналам продаж и системам учета',
-      text: 'Ассистент не висит отдельно: он передаёт заявки в CRM, резервирует товары на складе, готовит документы и помогает закрывать оплату через банковские сценарии.'
+      text: 'Работайте с обращениями, заказами и остатками в едином процессе. Подключайте доступные интеграции с CRM, складскими и платёжными системами.'
     },
-    pricing: { kicker: 'Тарифы', title: 'Прозрачная модель для запуска и масштабирования', text: '7 дней бесплатно: подключим демо-сценарий, покажем диалоги, склад, акции и контроль исполнения.' },
+    pricing: { kicker: 'Тарифы', title: 'Прозрачная модель для запуска и масштабирования', text: 'Бесплатный пробный период: подключим демо-сценарий, покажем диалоги, склад, акции и контроль исполнения.' },
     investor: {
       kicker: 'Для инвесторов', title: 'VENSO строится как масштабируемый AI SaaS, а не разовая автоматизация',
       text: 'Продуктовая модель сочетает подписку, отраслевые шаблоны, интеграционный слой и накопление знаний о продажах в разных вертикалях.',
       caption: 'Классический сервис + новая интеллектуальная инфраструктура'
     },
-    proof: { kicker: 'Социальное доверие', title: 'Понятный продукт для бизнеса, убедительный — для партнёров' },
+    proof: { kicker: 'Социальное доверие', title: 'Инструменты для ежедневной работы команды' },
     lead: { kicker: 'Запуск', title: 'Покажем, как VENSO может продавать в вашем бизнесе', text: 'Оставьте заявку — подготовим демонстрационный сценарий под вашу нишу, ассортимент и каналы коммуникаций.' },
     form: { name: 'Имя', phone: 'Телефон', company: 'Компания', plan: 'Интересующий тариф', message: 'Что хотите автоматизировать?', submit: 'Получить бесплатный запуск', note: 'Нажимая кнопку, вы отправляете заявку команде VENSO.', success: 'Заявка отправлена. Мы свяжемся с вами и подготовим демо-сценарий.', error: 'Не удалось отправить заявку. Проверьте имя и телефон.', sending: 'Отправляем заявку...', namePh: 'Алина', phonePh: '+7 771 996 70 23', companyPh: 'Название бизнеса', messagePh: 'Например: заявки из WhatsApp, склад, CRM, оплата' },
     footer: { text: 'AI-продавец нового поколения для продаж, учета и клиентского сервиса.', product: 'Продукт', company: 'Компания', contact: 'Контакты', support: 'Связь', city: 'Астана, Казахстан', rights: 'Все права защищены.' }
   },
   kk: {
-    nav: { features: 'Мүмкіндіктер', how: 'Қалай жұмыс істейді', demo: 'Демо', integrations: 'Интеграциялар', pricing: 'Тарифтер', investors: 'Инвесторларға', login: 'Кіру', cta: 'Тегін бастау' },
+    nav: { features: 'Мүмкіндіктер', how: 'Қалай жұмыс істейді', demo: 'Демо', integrations: 'Интеграциялар', pricing: 'Тарифтер', investors: 'Инвесторларға', login: 'Кіру', cta: 'Тіркелу', primaryNav: 'Негізгі навигация', mobileNav: 'Мобильді навигация', language: 'Тілді таңдау', menuOpen: 'Мәзірді ашу', menuClose: 'Мәзірді жабу' },
     hero: {
       eyebrow: 'Сату, қойма және сервиске арналған AI SaaS',
       title: 'Сататын, есепке алатын және өтінімді жабатын AI-сатушы',
       subtitle: 'VENSO диалогтық ассистентті, электрондық қойманы, сатылым аналитикасын және бухгалтерия, CRM, банк интеграцияларын біріктіреді.',
-      demo: 'Демо сұрау', try: 'Іс жүзінде көру', signalStock: 'Қойма', signalBank: 'Банк',
+      demo: 'Тіркелу', try: 'Іс жүзінде көру', signalStock: 'Қойма', signalBank: 'Банк',
       card1Label: 'Клиент', card1Title: 'Бүгін гүл шоғы керек', card1Text: 'VENSO нұсқаларды таңдап жатыр',
       card2Label: 'Тапсырыс', card2Title: 'Төлем дайын', card2Text: 'Қойма, CRM және банк синхрондалды'
     },
@@ -117,7 +70,7 @@ const t = {
     demo: { kicker: 'Тірі сценарий', title: 'Саланы таңдайтын анимациялық AI-диалог', placeholder: 'Хабарлама жазыңыз...', panelTitle: 'VENSO қатар не істейді' },
     verticals: { kicker: 'Қандай бизнеске', title: '“Барлығына” емес, нақты салаға бейімделеді' },
     integrations: { kicker: 'Интеграциялар', title: 'VENSO сату арналары мен есеп жүйелеріне қосылады', text: 'Ассистент бөлек тұрмайды: CRM-ге өтінім жібереді, қоймада тауарды резервтейді, құжат дайындайды және банк сценарийлері арқылы төлемді жабуға көмектеседі.' },
-    pricing: { kicker: 'Тарифтер', title: 'Іске қосу және масштабтау үшін түсінікті модель', text: '7 күн тегін: демо-сценарийді қосып, диалогтарды, қойманы, акцияларды және орындауды бақылауды көрсетеміз.' },
+    pricing: { kicker: 'Тарифтер', title: 'Іске қосу және масштабтау үшін түсінікті модель', text: 'Тегін сынақ кезеңі: демо-сценарийді қосып, диалогтарды, қойманы, акцияларды және орындауды бақылауды көрсетеміз.' },
     investor: { kicker: 'Инвесторларға', title: 'VENSO бір реттік автоматтандыру емес, масштабталатын AI SaaS ретінде құрылады', text: 'Өнімдік модель жазылымды, салалық шаблондарды, интеграциялық қабатты және әр вертикаль бойынша сату білімін біріктіреді.', caption: 'Классикалық сервис + жаңа интеллектуалды инфрақұрылым' },
     proof: { kicker: 'Сенім', title: 'Бизнеске түсінікті, серіктестерге сенімді өнім' },
     lead: { kicker: 'Іске қосу', title: 'VENSO сіздің бизнесіңізде қалай сата алатынын көрсетеміз', text: 'Өтінім қалдырыңыз — салаңызға, ассортиментіңізге және арналарыңызға бейімделген демо сценарий дайындаймыз.' },
@@ -125,12 +78,12 @@ const t = {
     footer: { text: 'Сату, есеп және клиенттік сервиске арналған жаңа буын AI-сатушы.', product: 'Өнім', company: 'Компания', contact: 'Байланыс', support: 'Байланыс', city: 'Астана, Қазақстан', rights: 'Барлық құқықтар қорғалған.' }
   },
   en: {
-    nav: { features: 'Features', how: 'How it works', demo: 'Demo', integrations: 'Integrations', pricing: 'Pricing', investors: 'Investors', login: 'Login', cta: 'Start free' },
+    nav: { features: 'Features', how: 'How it works', demo: 'Demo', integrations: 'Integrations', pricing: 'Pricing', investors: 'Investors', login: 'Login', cta: 'Register', primaryNav: 'Main navigation', mobileNav: 'Mobile navigation', language: 'Choose language', menuOpen: 'Open menu', menuClose: 'Close menu' },
     hero: {
       eyebrow: 'AI SaaS for sales, inventory and service',
       title: 'An AI sales operator that sells, tracks and closes requests',
       subtitle: 'VENSO combines a conversational assistant, digital inventory, sales analytics and integrations with accounting, CRM and banking workflows.',
-      demo: 'Request demo', try: 'See it live', signalStock: 'Inventory', signalBank: 'Bank',
+      demo: 'Register', try: 'See it live', signalStock: 'Inventory', signalBank: 'Bank',
       card1Label: 'Client', card1Title: 'Need flowers today', card1Text: 'VENSO is selecting options',
       card2Label: 'Order', card2Title: 'Payment ready', card2Text: 'Inventory, CRM and bank are synced'
     },
@@ -141,14 +94,34 @@ const t = {
     demo: { kicker: 'Live scenario', title: 'Animated AI dialog with industry selection', placeholder: 'Type a message...', panelTitle: 'What VENSO does in parallel' },
     verticals: { kicker: 'Industries', title: 'Launched for a specific niche, not “for everyone”' },
     integrations: { kicker: 'Integrations', title: 'VENSO connects to sales channels and accounting systems', text: 'The assistant is not isolated: it sends requests to CRM, reserves stock, prepares documents and supports closing payments through bank workflows.' },
-    pricing: { kicker: 'Pricing', title: 'A clear model for launch and scale', text: '7 days free: we launch a demo scenario and show dialogs, inventory, promos and execution control.' },
+    pricing: { kicker: 'Pricing', title: 'A clear model for launch and scale', text: 'Free trial period: we launch a demo scenario and show dialogs, inventory, promos and execution control.' },
     investor: { kicker: 'For investors', title: 'VENSO is designed as scalable AI SaaS, not a one-off automation', text: 'The product model combines subscriptions, vertical templates, integration layers and accumulated sales knowledge across industries.', caption: 'Classic service + new intelligent infrastructure' },
-    proof: { kicker: 'Social proof', title: 'Clear for businesses, convincing for partners' },
+    proof: { kicker: 'Social proof', title: 'Tools for day-to-day business operations' },
     lead: { kicker: 'Launch', title: 'We will show how VENSO can sell in your business', text: 'Leave a request — we will prepare a demo scenario for your industry, catalog and communication channels.' },
     form: { name: 'Name', phone: 'Phone', company: 'Company', plan: 'Plan of interest', message: 'What do you want to automate?', submit: 'Get free launch', note: 'By clicking the button, you send a request to the VENSO team.', success: 'Request sent. We will contact you and prepare a demo scenario.', error: 'Could not send the request. Check name and phone.', sending: 'Sending request...', namePh: 'Alina', phonePh: '+7 771 996 70 23', companyPh: 'Business name', messagePh: 'For example: WhatsApp requests, inventory, CRM, payment' },
     footer: { text: 'Next-generation AI sales operator for sales, accounting and customer service.', product: 'Product', company: 'Company', contact: 'Contacts', support: 'Contact', city: 'Astana, Kazakhstan', rights: 'All rights reserved.' }
   }
 };
+
+// Legal navigation and explicit lead-form consent: RU / KK / EN.
+const LEGAL_COPY = {
+  ru: {
+    footer: { legal: 'Документы', terms: 'Пользовательское соглашение', offer: 'Публичная оферта', privacy: 'Политика конфиденциальности', consent: 'Согласие на обработку данных', cookies: 'Политика cookie' },
+    form: { privacyLeadPrefix: 'Даю согласие на обработку персональных данных и ознакомлен(а) с документами:' }
+  },
+  kk: {
+    footer: { legal: 'Заңды құжаттар', terms: 'Пайдаланушы келісімі', offer: 'Жария оферта', privacy: 'Құпиялылық саясаты', consent: 'Деректерді өңдеуге келісім', cookies: 'Cookie саясаты' },
+    form: { privacyLeadPrefix: 'Жеке деректерімді өңдеуге келісемін және құжаттармен таныстым:' }
+  },
+  en: {
+    footer: { legal: 'Legal documents', terms: 'Terms of Service', offer: 'Public Offer', privacy: 'Privacy Policy', consent: 'Data Processing Consent', cookies: 'Cookie Policy' },
+    form: { privacyLeadPrefix: 'I consent to the processing of my personal data and have reviewed the documents:' }
+  }
+};
+for (const lang of Object.keys(LEGAL_COPY)) {
+  Object.assign(t[lang].footer, LEGAL_COPY[lang].footer);
+  Object.assign(t[lang].form, LEGAL_COPY[lang].form);
+}
 
 const copy = {
   "ru": {
@@ -1736,7 +1709,19 @@ function setLang(lang) {
   document.documentElement.lang = lang;
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = tr(el.dataset.i18n); });
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.setAttribute('placeholder', tr(el.dataset.i18nPlaceholder)); });
-  document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    const active = btn.dataset.lang === lang;
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-pressed', String(active));
+  });
+  document.querySelectorAll('[data-i18n-aria-label]').forEach(el => {
+    el.setAttribute('aria-label', tr(el.dataset.i18nAriaLabel));
+  });
+  const menuBtn = document.getElementById('menuBtn');
+  if (menuBtn) {
+    const open = document.getElementById('mobileMenu')?.classList.contains('open') ?? false;
+    menuBtn.setAttribute('aria-label', tr(open ? 'nav.menuClose' : 'nav.menuOpen'));
+  }
   renderStaticSections();
   renderScenarios();
   renderPricing();
@@ -1749,16 +1734,42 @@ function card(className, html) {
   return div;
 }
 
+// All landing icons share the same 24px outlined vector treatment.
+const SITE_MARKS = {
+  bot:'<rect x="4" y="7" width="16" height="13" rx="3"/><path d="M12 3v4M8 13h.01M16 13h.01M9 17h6"/>',
+  box:'<path d="m3 7 9-4 9 4v10l-9 4-9-4V7Zm0 0 9 4 9-4m-9 4v10"/>',
+  receipt:'<path d="M5 3h14v18l-3-2-4 2-4-2-3 2V3Zm4 5h6M9 12h6"/>',
+  wallet:'<rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 9h18m-4 5h2"/>',
+  flower:'<circle cx="12" cy="12" r="2"/><path d="M12 10c-3-5 1-8 3-5 2 3-1 5-1 5 6-3 8 1 5 3-3 2-5-1-5-1 3 6-1 8-3 5-2-3 1-5 1-5-6 3-8-1-5-3 3-2 5 1 5 1"/>',
+  utensils:'<path d="M3 3v6a3 3 0 0 0 6 0V3M6 3v18M16 21V3c4 1 5 5 5 9h-5"/>',
+  sparkle:'<path d="m12 2 2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2L12 2Z"/>',
+  bag:'<path d="M4 8h16l1 13H3L4 8Zm4 0V6a4 4 0 0 1 8 0v2"/>',
+  medical:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 7v10M7 12h10"/>',
+  wrench:'<path d="M20 7a6 6 0 0 1-8 7L6 20a2.5 2.5 0 1 1-3-3l6-6a6 6 0 0 1 7-8l-4 4 3 3 5-3Z"/>',
+  message:'<path d="M21 12c0 5-4 8-9 8l-7 2 2-5a8.5 8.5 0 1 1 14-5ZM8 12h8"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18m-9-9c-3 3-3 15 0 18m0-18c3 3 3 15 0 18"/>',
+  people:'<circle cx="9" cy="8" r="3"/><path d="M3 20v-2c0-3 3-5 6-5s6 2 6 5v2M16 5a3 3 0 0 1 0 6"/>',
+  plug:'<path d="M8 3v4m8-4v4M6 7h12v4c0 3-3 5-6 5s-6-2-6-5V7Zm6 9v5"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/>',
+  check:'<path d="M5 12l4 4L19 6"/>'
+};
+function siteIcon(name) {
+  return '<svg class="marketing-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+    (SITE_MARKS[name] || SITE_MARKS.sparkle) + '</svg>';
+}
+const FEATURE_ICONS=['bot','box','receipt','wallet'];
+const VERTICAL_ICONS=['flower','utensils','sparkle','bag','medical','wrench'];
+const INTEGRATION_ICONS=['message','globe','people','receipt','wallet','plug','calendar','box','bot','check'];
+
 function renderStaticSections() {
   const data = activeCopy();
-  fill('metricsGrid', data.metrics.map(([value, text]) => card('metric-card reveal', `<span>${value}</span><span>${text}</span>`)));
-  fill('featureGrid', data.features.map(([icon, title, text]) => card('feature-card reveal', `<div class="icon-box">${icon}</div><h3>${title}</h3><p>${text}</p>`)));
+  fill('metricsGrid', data.metrics.filter(([value]) => !/^3(?: languages| языка| тіл)/i.test(String(value))).map(([value, text]) => card('metric-card reveal', `<span>${value}</span><span>${text}</span>`)));
+  fill('featureGrid', data.features.map(([, title, text], index) => card('feature-card reveal', `<div class="icon-box">${siteIcon(FEATURE_ICONS[index])}</div><h3>${title}</h3><p>${text}</p>`)));
   fill('bentoGrid', data.bento.map(([size, num, title, text]) => card(`bento-card ${size} reveal`, `<span class="bento-value">${num}</span><h3>${title}</h3><p>${text}</p>`)));
   fill('timeline', data.steps.map(([num, title, text]) => card('step-card reveal', `<div class="step-num">${num}</div><h3>${title}</h3><p>${text}</p>`)));
-  fill('verticalGrid', data.verticals.map(([icon, title, text]) => card('vertical-card reveal', `<div class="visual-dot">${icon}</div><h3>${title}</h3><p>${text}</p>`)));
-  fill('integrationGrid', data.integrations.map(([icon, title, text]) => card('integration-card reveal', `<div class="visual-dot">${icon}</div><h3>${title}</h3><p>${text}</p>`)));
+  fill('verticalGrid', data.verticals.map(([, title, text], index) => card('vertical-card reveal', `<div class="visual-dot">${siteIcon(VERTICAL_ICONS[index])}</div><h3>${title}</h3><p>${text}</p>`)));
+  fill('integrationGrid', data.integrations.map(([, title, text], index) => card('integration-card reveal', `<div class="visual-dot">${siteIcon(INTEGRATION_ICONS[index])}</div><h3>${title}</h3><p>${text}</p>`)));
   fill('investorCards', data.investors.map(([title, text]) => card('investor-mini reveal', `<strong>${title}</strong><span>${text}</span>`)));
-  fill('proofGrid', data.proofs.map(([name, role, quote]) => card('proof-card reveal', `<strong>${name}</strong><small>${role}</small><div class="stars-rating">★★★★★</div><p>“${quote}”</p>`)));
   observeReveal();
 }
 
@@ -1769,21 +1780,108 @@ function fill(id, nodes) {
   nodes.forEach(node => root.appendChild(node));
 }
 
+/**
+ * Switch public tariff source by changing the meta tag in index.html:
+ * /api/tariffs today, /api/v1/tariffs after public API routing is agreed.
+ * Both legacy landing response and the system TariffResponseDTO are supported.
+ * This never calls protected admin endpoints or sends credentials.
+ */
+function normalizeTariffPayload(payload) {
+  const details = payload && typeof payload === 'object' && 'details' in payload ? payload.details : payload;
+  const list = Array.isArray(details) ? details
+    : Array.isArray(details?.tariffs) ? details.tariffs
+    : Array.isArray(details?.data) ? details.data : [];
+  return list.map(row => {
+    if (!row || typeof row !== 'object') return null;
+    if (typeof row.priceKzt === 'number' && row.name && typeof row.name === 'object' &&
+        Number.isFinite(row.priceKzt) && row.priceKzt >= 0 && row.isPublic !== false) {
+      return {
+        source: 'system',
+        id: String(row.code || row.id || '').toLowerCase(),
+        names: row.name,
+        priceKzt: row.priceKzt,
+        periodDays: Number.isFinite(row.periodDays) ? row.periodDays : 30,
+        maxRequests: Number(row.maxRequests) || 0,
+        maxChannels: Number(row.maxChannels) || 0,
+        maxUsers: Number(row.maxUsers) || 0,
+        highlighted: false,
+      };
+    }
+    if (typeof row.name === 'string' && typeof row.price === 'string') return row;
+    return null;
+  }).filter(Boolean);
+}
+
 async function fetchTariffs() {
-  state.tariffs = FALLBACK_TARIFFS;
+  const fallback = normalizeTariffPayload(FALLBACK_TARIFFS);
+  state.tariffs = fallback;
+  const endpoint = document.querySelector('meta[name="venso-public-tariffs-endpoint"]')?.content || '/api/tariffs';
   try {
-    const res = await fetch('/api/tariffs');
-    if (!res.ok) throw new Error('api_error');
-    const json = await res.json();
-    state.tariffs = Array.isArray(json.tariffs) && json.tariffs.length ? json.tariffs : FALLBACK_TARIFFS;
+    const url = new URL(endpoint, location.origin);
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') throw new Error('unsupported_protocol');
+    const response = await fetch(url.href, { headers: { Accept: 'application/json' } });
+    if (!response.ok) throw new Error('api_error');
+    const tariffs = normalizeTariffPayload(await response.json());
+    state.tariffs = tariffs.length ? tariffs : fallback;
   } catch (error) {
-    state.tariffs = FALLBACK_TARIFFS;
+    state.tariffs = fallback;
   }
   renderPricing();
 }
 
+// Marketing copy for backend tariffs, matched by stable code. Only qualitative
+// statements live here: price, period and limits are rendered from the backend,
+// so the page never promises numbers the system does not enforce.
+const TARIFF_MARKETING = {
+  ru: {
+    trial: 'Бесплатный пробный период',
+    start: { description: 'Быстрый запуск AI-продавца для одного направления и проверки спроса.', features: ['AI-продавец 24/7', 'Базовая база знаний', 'Рекомендации товаров и акций'] },
+    pro: { badge: 'Популярный', highlighted: true, description: 'Продажи, склад, акции, CRM и контроль исполнения для растущего бизнеса.', features: ['AI-продавец 24/7', 'Электронный склад и резервы', 'Настройка акций без кода', 'Контроль исполнения заявок'] },
+    business: { badge: 'Для сети', description: 'Единый контур продаж с бухгалтерией, банками и повторными продажами.', features: ['Интеграция с бухгалтерией', 'Банковские ссылки и закрытие заявок', 'База постоянных клиентов', 'API и кастомные сценарии'] }
+  },
+  kk: {
+    trial: 'Тегін сынақ кезеңі',
+    start: { description: 'Бір бағытқа арналған AI-сатушыны жылдам іске қосып, сұранысты тексеру.', features: ['AI-сатушы 24/7', 'Базалық білім базасы', 'Тауарлар мен акциялар ұсыныстары'] },
+    pro: { badge: 'Танымал', highlighted: true, description: 'Өсіп жатқан бизнеске арналған сату, қойма, акциялар, CRM және орындауды бақылау.', features: ['AI-сатушы 24/7', 'Электрондық қойма және резервтер', 'Кодсыз акция баптау', 'Өтінімдердің орындалуын бақылау'] },
+    business: { badge: 'Желіге арналған', description: 'Бухгалтерия, банктер және қайталама сатылымдармен біртұтас сату контуры.', features: ['Бухгалтериямен интеграция', 'Банктік сілтемелер және өтінімді жабу', 'Тұрақты клиенттер базасы', 'API және жеке сценарийлер'] }
+  },
+  en: {
+    trial: 'Free trial period',
+    start: { description: 'Fast AI seller launch for one direction and demand testing.', features: ['AI seller 24/7', 'Basic knowledge base', 'Product and promo recommendations'] },
+    pro: { badge: 'Popular', highlighted: true, description: 'Sales, inventory, promos, CRM and execution control for growing businesses.', features: ['AI seller 24/7', 'Digital inventory and reservations', 'No-code promo setup', 'Request execution control'] },
+    business: { badge: 'For chains', description: 'One sales loop with accounting, banks and repeat sales.', features: ['Accounting integration', 'Bank payment links and request closing', 'Repeat customer base', 'API and custom scenarios'] }
+  }
+};
 
 function localizeTariff(tariff) {
+  if (tariff.source === 'system') {
+    const lang = state.lang;
+    const strings = {
+      ru: { month:'мес', period:'дн.', requests:'AI-запросов в период', channels:'Каналов', users:'Пользователей', unlimited:'без ограничений' },
+      kk: { month:'ай', period:'күн', requests:'Кезеңдегі AI-сұраулар', channels:'Арналар', users:'Пайдаланушылар', unlimited:'шектеусіз' },
+      en: { month:'mo', period:'days', requests:'AI requests per period', channels:'Channels', users:'Users', unlimited:'unlimited' }
+    }[lang] || { month:'mo', period:'days', requests:'AI requests per period', channels:'Channels', users:'Users', unlimited:'unlimited' };
+    const marketing = TARIFF_MARKETING[lang] || TARIFF_MARKETING.ru;
+    const copy = marketing[tariff.id] || {};
+    const fmt = value => value === 0 ? strings.unlimited :
+      new Intl.NumberFormat(lang === 'kk' ? 'kk-KZ' : lang === 'en' ? 'en-US' : 'ru-RU').format(value);
+    return {
+      ...tariff,
+      name: tariff.names?.[lang] || tariff.names?.ru || tariff.names?.en || tariff.id,
+      price: new Intl.NumberFormat('ru-RU').format(tariff.priceKzt) + ' ₸',
+      period: '/ ' + (tariff.periodDays === 30 ? strings.month : tariff.periodDays + ' ' + strings.period),
+      description: copy.description || '',
+      badge: copy.badge || '',
+      highlighted: Boolean(copy.highlighted),
+      features: [
+        marketing.trial,
+        strings.requests + ': ' + fmt(tariff.maxRequests),
+        strings.channels + ': ' + fmt(tariff.maxChannels),
+        strings.users + ': ' + fmt(tariff.maxUsers),
+        ...(copy.features || [])
+      ]
+    };
+  }
   const local = (TARIFF_I18N[state.lang] && TARIFF_I18N[state.lang][tariff.id]) || {};
   return { ...tariff, ...local };
 }
@@ -1797,13 +1895,15 @@ function renderPricing() {
   state.tariffs.map(localizeTariff).forEach(tariff => {
     const buttonClass = tariff.highlighted ? 'primary-btn' : 'ghost-btn';
     const el = card(`pricing-card reveal ${tariff.highlighted ? 'highlighted' : ''}`, `
-      <span class="pricing-badge">${escapeHtml(tariff.badge || '7 дней бесплатно')}</span>
+      <span class="pricing-badge">${escapeHtml(tariff.badge || '')}</span>
       <h3>${escapeHtml(tariff.name)}</h3>
       <div class="price"><strong>${escapeHtml(tariff.price)}</strong><span>${escapeHtml(tariff.period || '')}</span></div>
       <p>${escapeHtml(tariff.description || '')}</p>
       <ul>${(tariff.features || []).map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
-      <a class="${buttonClass}" href="#lead" data-plan="${escapeHtml(tariff.name)}">${tr('nav.cta')}</a>
+      <a class="${buttonClass}" href="/register" data-account-link="register" data-plan="${escapeHtml(tariff.name)}">${tr('nav.cta')}</a>
     `);
+    // No default badge: backend tariffs carry only a marketing badge (Popular / For chains).
+    if (!tariff.badge) el.querySelector('.pricing-badge')?.remove();
     root.appendChild(el);
     if (planSelect) {
       const opt = document.createElement('option');
@@ -1812,6 +1912,7 @@ function renderPricing() {
       planSelect.appendChild(opt);
     }
   });
+  initAccountLinks(root);
   root.querySelectorAll('[data-plan]').forEach(a => a.addEventListener('click', () => {
     if (planSelect) planSelect.value = a.dataset.plan;
   }));
@@ -1863,6 +1964,7 @@ function typeInto(element, text, speed = 18) {
     target.textContent = text.slice(0, i);
     i += 1;
     if (i <= text.length) schedule(tick, speed + Math.random() * 10);
+    else target.classList.add('done');
   }
   tick();
 }
@@ -1880,7 +1982,7 @@ function renderScenarioContent() {
       schedule(() => {
         typing.classList.remove('typing');
         typing.innerHTML = `<small>${type === 'ai' ? 'VENSO' : tr('hero.card1Label')}</small>`;
-        typeInto(typing, escapeHtml(text), 12);
+        typeInto(typing, text, 12);
         chat.scrollTop = chat.scrollHeight;
       }, type === 'ai' ? 650 : 380);
     }, delay);
@@ -1889,7 +1991,7 @@ function renderScenarioContent() {
   const recRoot = document.getElementById('recommendations');
   recRoot.innerHTML = '';
   scenario.recs.forEach(([icon, title, text, price], index) => {
-    const rec = card(`rec-card ${index === 1 ? 'highlight' : ''}`, `<div><div class="rec-icon">${icon}</div><h3>${title}</h3><p>${text}</p></div><strong>${price}</strong>`);
+    const rec = card(`rec-card ${index === 1 ? 'highlight' : ''}`, `<div><div class="rec-icon">${siteIcon(['flower','bag','check'][index])}</div><h3>${title}</h3><p>${text}</p></div><strong>${price}</strong>`);
     rec.style.animationDelay = `${index * 120}ms`;
     recRoot.appendChild(rec);
   });
@@ -1919,6 +2021,11 @@ function initLeadForm() {
   if (!form) return;
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    const privacyConsent = form.querySelector('#leadDataConsent');
+    if (privacyConsent && !privacyConsent.checked) {
+      privacyConsent.reportValidity();
+      return;
+    }
     const payload = Object.fromEntries(new FormData(form).entries());
     payload.lang = state.lang;
     payload.page = location.href;
@@ -1955,8 +2062,24 @@ function initHeader() {
   document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLang(btn.dataset.lang)));
   const menuBtn = document.getElementById('menuBtn');
   const mobileMenu = document.getElementById('mobileMenu');
-  menuBtn?.addEventListener('click', () => mobileMenu.classList.toggle('open'));
-  mobileMenu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+  const setMenuOpen = (open) => {
+    if (!mobileMenu || !menuBtn) return;
+    mobileMenu.classList.toggle('open', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+    menuBtn.setAttribute('aria-label', tr(open ? 'nav.menuClose' : 'nav.menuOpen'));
+  };
+  menuBtn?.addEventListener('click', () => setMenuOpen(!mobileMenu?.classList.contains('open')));
+  mobileMenu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenuOpen(false)));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && mobileMenu?.classList.contains('open')) {
+      setMenuOpen(false);
+      menuBtn?.focus();
+    }
+  });
+  document.addEventListener('pointerdown', event => {
+    if (!mobileMenu?.classList.contains('open')) return;
+    if (!menuBtn?.contains(event.target) && !mobileMenu.contains(event.target)) setMenuOpen(false);
+  });
 }
 
 function initCursorGlow() {
@@ -1972,6 +2095,15 @@ function escapeHtml(str) {
   return String(str || '').replace(/[&<>'"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#039;', '"': '&quot;' }[ch]));
 }
 
+function accountUrl(route) {
+  return (['localhost','127.0.0.1'].includes(location.hostname)
+    ? location.protocol + '//' + location.hostname + ':4000'
+    : 'https://app.venso.ai') + '/' + route;
+}
+function initAccountLinks(root = document) {
+  root.querySelectorAll('[data-account-link]').forEach(a => { a.href = accountUrl(a.dataset.accountLink); });
+}
+initAccountLinks();
 initHeader();
 initCursorGlow();
 setLang(state.lang);

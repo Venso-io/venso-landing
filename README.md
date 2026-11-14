@@ -10,8 +10,8 @@
 - В мобильное меню добавлен выбор языка RU / KZ / EN.
 - Меню сделано темнее, контрастнее и менее серым.
 - Добавлены смыслы про продвижение товаров и акций без кода, расписание кампаний, контроль исполнения заявок, анализ покупок и базу постоянных клиентов.
-- Блок тарифов отображается даже на Vercel без backend API за счет fallback-данных.
-- В тарифы добавлен бесплатный триал на 7 дней.
+- Тарифы берутся из backend Venso (`GET /api/v1/tariffs`) через `/api/tariffs` сайта; без backend показывается встроенная копия сида тарифов.
+- Конкретное число дней пробного периода на сайте не указывается: в системе оно задаётся `BILLING_TRIAL_DAYS` (по умолчанию 14).
 - Демо-чат теперь появляется как реальная переписка: сообщения печатаются постепенно.
 
 ## Локальный запуск
@@ -29,6 +29,25 @@ http://localhost:3010
 
 Служебная админка локально остается доступной по `/admin`, но на публичном лендинге ссылки на нее убраны.
 
+## Backend Venso
+
+| Переменная | Назначение |
+|---|---|
+| `VENSO_API_URL` | Адрес backend, например `https://api.venso.kz` (без `/api`). Источник тарифов. |
+| `VENSO_API_TIMEOUT_MS` | Таймаут запроса тарифов, по умолчанию `4000`. |
+
+```bash
+VENSO_API_URL=http://localhost:8080 npm start
+```
+
+`/api/tariffs` проксирует публичный `GET /api/v1/tariffs` (без JWT) и кеширует ответ на минуту, поэтому CORS на backend для сайта не нужен. Цены, названия и лимиты — из backend, маркетинговые описания — в `TARIFF_MARKETING` (`public/js/app.js`) по коду тарифа. Без `VENSO_API_URL` локальный сервер отдаёт тарифы из локальной админки, а если их нет — страница показывает встроенную копию сида.
+
+## Юридические документы и согласия
+
+Редакция документов — `version` в `public/js/legal-content.js`. Backend пишет согласия при регистрации с тем же значением (`LEGAL_DOCUMENTS_VERSION`), поэтому при публикации новой редакции обе настройки меняются вместе.
+
+Заявка с сайта без отметки согласия на обработку ПДн отклоняется (`400 personal_data_consent_required`). Локальный сервер сохраняет с заявкой `personalDataConsent`, `consentAcceptedAt`, `consentDocuments`, `consentDocumentsVersion` и IP. На Vercel заявки пока не сохраняются.
+
 ## Vercel
 
 Для Vercel добавлены serverless endpoints:
@@ -38,7 +57,7 @@ http://localhost:3010
 /api/leads
 ```
 
-Тарифы на Vercel будут отображаться даже если backend не запущен. Для постоянного хранения заявок на Vercel нужно подключить Postgres/Supabase/Neon и заменить временный обработчик `/api/leads`.
+Для реальных тарифов задайте `VENSO_API_URL` в Environment Variables проекта. Без него тарифы отображаются из встроенной копии сида. Для постоянного хранения заявок на Vercel нужно подключить Postgres/Supabase/Neon и заменить временный обработчик `/api/leads`.
 
 ## Обновление через Git
 
@@ -54,4 +73,4 @@ git push
 
 ## Build marker
 
-Current build: `v4-i18n-demo-20260617`. Check browser DevTools console for `VENSO build v4-i18n-demo-20260617 loaded`.
+Current build: `v5-venso-api-tariffs-20261115`. Check browser DevTools console for `VENSO build v5-venso-api-tariffs-20261115 loaded`.
