@@ -1,60 +1,21 @@
-const tariffs = [
-  {
-    "id": "start",
-    "name": "Start",
-    "badge": "7 дней бесплатно",
-    "price": "15 000 ₸",
-    "period": "/ мес",
-    "description": "Быстрый запуск AI-продавца для одного направления и проверки спроса.",
-    "features": [
-      "7-дневный бесплатный триал",
-      "AI-продавец 24/7",
-      "До 1 000 диалогов в месяц",
-      "1 канал интеграции",
-      "Базовая база знаний",
-      "Рекомендации товаров и акций"
-    ],
-    "highlighted": false
-  },
-  {
-    "id": "pro",
-    "name": "Pro",
-    "badge": "Популярный",
-    "price": "35 000 ₸",
-    "period": "/ мес",
-    "description": "Продажи, склад, акции, CRM и контроль исполнения для растущего бизнеса.",
-    "features": [
-      "7-дневный бесплатный триал",
-      "AI-продавец 24/7",
-      "До 5 000 диалогов в месяц",
-      "До 3 каналов интеграции",
-      "Электронный склад и резервы",
-      "Настройка акций без кода",
-      "Контроль исполнения заявок"
-    ],
-    "highlighted": true
-  },
-  {
-    "id": "business",
-    "name": "Business",
-    "badge": "Для сети",
-    "price": "70 000 ₸",
-    "period": "/ мес",
-    "description": "Единый контур продаж с бухгалтерией, банками и повторными продажами.",
-    "features": [
-      "7-дневный бесплатный триал",
-      "Безлимитные диалоги",
-      "Все каналы коммуникаций",
-      "Интеграция с бухгалтерией",
-      "Банковские ссылки и закрытие заявок",
-      "База постоянных клиентов",
-      "API и кастомные сценарии"
-    ],
-    "highlighted": false
-  }
-];
+const { fetchBackendTariffs } = require('../lib/venso-api');
 
-module.exports = function handler(req, res) {
-  res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=600');
-  res.status(200).json({ tariffs });
+/**
+ * Public tariffs for the pricing section, proxied from the Venso backend
+ * (VENSO_API_URL + /api/v1/tariffs). Without the backend the list is empty and
+ * the page renders its built-in copy of the backend seed.
+ */
+module.exports = async function handler(req, res) {
+  if (req.method !== 'GET') return res.status(405).json({ error: 'method_not_allowed' });
+  try {
+    const tariffs = await fetchBackendTariffs();
+    if (tariffs) {
+      res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=600');
+      return res.status(200).json({ source: 'venso-api', tariffs });
+    }
+  } catch (error) {
+    console.warn(`Venso API tariffs unavailable: ${error.message}`);
+  }
+  res.setHeader('Cache-Control', 's-maxage=30');
+  return res.status(200).json({ source: 'unavailable', tariffs: [] });
 };

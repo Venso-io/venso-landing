@@ -1,4 +1,4 @@
-console.info('VENSO build v4-i18n-demo-20260617 loaded');
+console.info('VENSO build v5-venso-api-tariffs-20261115 loaded');
 const state = {
   lang: localStorage.getItem('venso_lang') || 'ru',
   tariffs: [],
@@ -6,60 +6,13 @@ const state = {
   chatTimers: []
 };
 
+// Built-in copy of the backend tariff seed (V31__create_tariffs.sql), in the
+// public TariffResponseDTO shape. Shown only while /api/tariffs cannot reach the
+// Venso backend; real prices and limits always come from GET /api/v1/tariffs.
 const FALLBACK_TARIFFS = [
-  {
-    "id": "start",
-    "name": "Start",
-    "badge": "7 дней бесплатно",
-    "price": "15 000 ₸",
-    "period": "/ мес",
-    "description": "Быстрый запуск AI-продавца для одного направления и проверки спроса.",
-    "features": [
-      "7-дневный бесплатный триал",
-      "AI-продавец 24/7",
-      "До 1 000 диалогов в месяц",
-      "1 канал интеграции",
-      "Базовая база знаний",
-      "Рекомендации товаров и акций"
-    ],
-    "highlighted": false
-  },
-  {
-    "id": "pro",
-    "name": "Pro",
-    "badge": "Популярный",
-    "price": "35 000 ₸",
-    "period": "/ мес",
-    "description": "Продажи, склад, акции, CRM и контроль исполнения для растущего бизнеса.",
-    "features": [
-      "7-дневный бесплатный триал",
-      "AI-продавец 24/7",
-      "До 5 000 диалогов в месяц",
-      "До 3 каналов интеграции",
-      "Электронный склад и резервы",
-      "Настройка акций без кода",
-      "Контроль исполнения заявок"
-    ],
-    "highlighted": true
-  },
-  {
-    "id": "business",
-    "name": "Business",
-    "badge": "Для сети",
-    "price": "70 000 ₸",
-    "period": "/ мес",
-    "description": "Единый контур продаж с бухгалтерией, банками и повторными продажами.",
-    "features": [
-      "7-дневный бесплатный триал",
-      "Безлимитные диалоги",
-      "Все каналы коммуникаций",
-      "Интеграция с бухгалтерией",
-      "Банковские ссылки и закрытие заявок",
-      "База постоянных клиентов",
-      "API и кастомные сценарии"
-    ],
-    "highlighted": false
-  }
+  { code: 'start', name: { ru: 'Start', kk: 'Start', en: 'Start' }, priceKzt: 15000, periodDays: 30, maxRequests: 1000, maxChannels: 3, maxUsers: 2 },
+  { code: 'pro', name: { ru: 'Pro', kk: 'Pro', en: 'Pro' }, priceKzt: 35000, periodDays: 30, maxRequests: 4000, maxChannels: 5, maxUsers: 5 },
+  { code: 'business', name: { ru: 'Business', kk: 'Business', en: 'Business' }, priceKzt: 70000, periodDays: 30, maxRequests: 0, maxChannels: 0, maxUsers: 0 }
 ];
 
 const t = {
@@ -89,7 +42,7 @@ const t = {
       kicker: 'Интеграции', title: 'VENSO подключается к каналам продаж и системам учета',
       text: 'Работайте с обращениями, заказами и остатками в едином процессе. Подключайте доступные интеграции с CRM, складскими и платёжными системами.'
     },
-    pricing: { kicker: 'Тарифы', title: 'Прозрачная модель для запуска и масштабирования', text: '7 дней бесплатно: подключим демо-сценарий, покажем диалоги, склад, акции и контроль исполнения.' },
+    pricing: { kicker: 'Тарифы', title: 'Прозрачная модель для запуска и масштабирования', text: 'Бесплатный пробный период: подключим демо-сценарий, покажем диалоги, склад, акции и контроль исполнения.' },
     investor: {
       kicker: 'Для инвесторов', title: 'VENSO строится как масштабируемый AI SaaS, а не разовая автоматизация',
       text: 'Продуктовая модель сочетает подписку, отраслевые шаблоны, интеграционный слой и накопление знаний о продажах в разных вертикалях.',
@@ -117,7 +70,7 @@ const t = {
     demo: { kicker: 'Тірі сценарий', title: 'Саланы таңдайтын анимациялық AI-диалог', placeholder: 'Хабарлама жазыңыз...', panelTitle: 'VENSO қатар не істейді' },
     verticals: { kicker: 'Қандай бизнеске', title: '“Барлығына” емес, нақты салаға бейімделеді' },
     integrations: { kicker: 'Интеграциялар', title: 'VENSO сату арналары мен есеп жүйелеріне қосылады', text: 'Ассистент бөлек тұрмайды: CRM-ге өтінім жібереді, қоймада тауарды резервтейді, құжат дайындайды және банк сценарийлері арқылы төлемді жабуға көмектеседі.' },
-    pricing: { kicker: 'Тарифтер', title: 'Іске қосу және масштабтау үшін түсінікті модель', text: '7 күн тегін: демо-сценарийді қосып, диалогтарды, қойманы, акцияларды және орындауды бақылауды көрсетеміз.' },
+    pricing: { kicker: 'Тарифтер', title: 'Іске қосу және масштабтау үшін түсінікті модель', text: 'Тегін сынақ кезеңі: демо-сценарийді қосып, диалогтарды, қойманы, акцияларды және орындауды бақылауды көрсетеміз.' },
     investor: { kicker: 'Инвесторларға', title: 'VENSO бір реттік автоматтандыру емес, масштабталатын AI SaaS ретінде құрылады', text: 'Өнімдік модель жазылымды, салалық шаблондарды, интеграциялық қабатты және әр вертикаль бойынша сату білімін біріктіреді.', caption: 'Классикалық сервис + жаңа интеллектуалды инфрақұрылым' },
     proof: { kicker: 'Сенім', title: 'Бизнеске түсінікті, серіктестерге сенімді өнім' },
     lead: { kicker: 'Іске қосу', title: 'VENSO сіздің бизнесіңізде қалай сата алатынын көрсетеміз', text: 'Өтінім қалдырыңыз — салаңызға, ассортиментіңізге және арналарыңызға бейімделген демо сценарий дайындаймыз.' },
@@ -141,7 +94,7 @@ const t = {
     demo: { kicker: 'Live scenario', title: 'Animated AI dialog with industry selection', placeholder: 'Type a message...', panelTitle: 'What VENSO does in parallel' },
     verticals: { kicker: 'Industries', title: 'Launched for a specific niche, not “for everyone”' },
     integrations: { kicker: 'Integrations', title: 'VENSO connects to sales channels and accounting systems', text: 'The assistant is not isolated: it sends requests to CRM, reserves stock, prepares documents and supports closing payments through bank workflows.' },
-    pricing: { kicker: 'Pricing', title: 'A clear model for launch and scale', text: '7 days free: we launch a demo scenario and show dialogs, inventory, promos and execution control.' },
+    pricing: { kicker: 'Pricing', title: 'A clear model for launch and scale', text: 'Free trial period: we launch a demo scenario and show dialogs, inventory, promos and execution control.' },
     investor: { kicker: 'For investors', title: 'VENSO is designed as scalable AI SaaS, not a one-off automation', text: 'The product model combines subscriptions, vertical templates, integration layers and accumulated sales knowledge across industries.', caption: 'Classic service + new intelligent infrastructure' },
     proof: { kicker: 'Social proof', title: 'Tools for day-to-day business operations' },
     lead: { kicker: 'Launch', title: 'We will show how VENSO can sell in your business', text: 'Leave a request — we will prepare a demo scenario for your industry, catalog and communication channels.' },
@@ -1860,7 +1813,8 @@ function normalizeTariffPayload(payload) {
 }
 
 async function fetchTariffs() {
-  state.tariffs = FALLBACK_TARIFFS;
+  const fallback = normalizeTariffPayload(FALLBACK_TARIFFS);
+  state.tariffs = fallback;
   const endpoint = document.querySelector('meta[name="venso-public-tariffs-endpoint"]')?.content || '/api/tariffs';
   try {
     const url = new URL(endpoint, location.origin);
@@ -1868,34 +1822,63 @@ async function fetchTariffs() {
     const response = await fetch(url.href, { headers: { Accept: 'application/json' } });
     if (!response.ok) throw new Error('api_error');
     const tariffs = normalizeTariffPayload(await response.json());
-    state.tariffs = tariffs.length ? tariffs : FALLBACK_TARIFFS;
+    state.tariffs = tariffs.length ? tariffs : fallback;
   } catch (error) {
-    state.tariffs = FALLBACK_TARIFFS;
+    state.tariffs = fallback;
   }
   renderPricing();
 }
+
+// Marketing copy for backend tariffs, matched by stable code. Only qualitative
+// statements live here: price, period and limits are rendered from the backend,
+// so the page never promises numbers the system does not enforce.
+const TARIFF_MARKETING = {
+  ru: {
+    trial: 'Бесплатный пробный период',
+    start: { description: 'Быстрый запуск AI-продавца для одного направления и проверки спроса.', features: ['AI-продавец 24/7', 'Базовая база знаний', 'Рекомендации товаров и акций'] },
+    pro: { badge: 'Популярный', highlighted: true, description: 'Продажи, склад, акции, CRM и контроль исполнения для растущего бизнеса.', features: ['AI-продавец 24/7', 'Электронный склад и резервы', 'Настройка акций без кода', 'Контроль исполнения заявок'] },
+    business: { badge: 'Для сети', description: 'Единый контур продаж с бухгалтерией, банками и повторными продажами.', features: ['Интеграция с бухгалтерией', 'Банковские ссылки и закрытие заявок', 'База постоянных клиентов', 'API и кастомные сценарии'] }
+  },
+  kk: {
+    trial: 'Тегін сынақ кезеңі',
+    start: { description: 'Бір бағытқа арналған AI-сатушыны жылдам іске қосып, сұранысты тексеру.', features: ['AI-сатушы 24/7', 'Базалық білім базасы', 'Тауарлар мен акциялар ұсыныстары'] },
+    pro: { badge: 'Танымал', highlighted: true, description: 'Өсіп жатқан бизнеске арналған сату, қойма, акциялар, CRM және орындауды бақылау.', features: ['AI-сатушы 24/7', 'Электрондық қойма және резервтер', 'Кодсыз акция баптау', 'Өтінімдердің орындалуын бақылау'] },
+    business: { badge: 'Желіге арналған', description: 'Бухгалтерия, банктер және қайталама сатылымдармен біртұтас сату контуры.', features: ['Бухгалтериямен интеграция', 'Банктік сілтемелер және өтінімді жабу', 'Тұрақты клиенттер базасы', 'API және жеке сценарийлер'] }
+  },
+  en: {
+    trial: 'Free trial period',
+    start: { description: 'Fast AI seller launch for one direction and demand testing.', features: ['AI seller 24/7', 'Basic knowledge base', 'Product and promo recommendations'] },
+    pro: { badge: 'Popular', highlighted: true, description: 'Sales, inventory, promos, CRM and execution control for growing businesses.', features: ['AI seller 24/7', 'Digital inventory and reservations', 'No-code promo setup', 'Request execution control'] },
+    business: { badge: 'For chains', description: 'One sales loop with accounting, banks and repeat sales.', features: ['Accounting integration', 'Bank payment links and request closing', 'Repeat customer base', 'API and custom scenarios'] }
+  }
+};
 
 function localizeTariff(tariff) {
   if (tariff.source === 'system') {
     const lang = state.lang;
     const strings = {
-      ru: { period:'дн.', requests:'AI-запросов', channels:'Каналов', users:'Пользователей', unlimited:'без ограничений' },
-      kk: { period:'күн', requests:'AI-сұраулар', channels:'Арналар', users:'Пайдаланушылар', unlimited:'шектеусіз' },
-      en: { period:'days', requests:'AI requests', channels:'Channels', users:'Users', unlimited:'unlimited' }
-    }[lang] || { period:'days', requests:'AI requests', channels:'Channels', users:'Users', unlimited:'unlimited' };
+      ru: { month:'мес', period:'дн.', requests:'AI-запросов в период', channels:'Каналов', users:'Пользователей', unlimited:'без ограничений' },
+      kk: { month:'ай', period:'күн', requests:'Кезеңдегі AI-сұраулар', channels:'Арналар', users:'Пайдаланушылар', unlimited:'шектеусіз' },
+      en: { month:'mo', period:'days', requests:'AI requests per period', channels:'Channels', users:'Users', unlimited:'unlimited' }
+    }[lang] || { month:'mo', period:'days', requests:'AI requests per period', channels:'Channels', users:'Users', unlimited:'unlimited' };
+    const marketing = TARIFF_MARKETING[lang] || TARIFF_MARKETING.ru;
+    const copy = marketing[tariff.id] || {};
     const fmt = value => value === 0 ? strings.unlimited :
       new Intl.NumberFormat(lang === 'kk' ? 'kk-KZ' : lang === 'en' ? 'en-US' : 'ru-RU').format(value);
     return {
       ...tariff,
       name: tariff.names?.[lang] || tariff.names?.ru || tariff.names?.en || tariff.id,
       price: new Intl.NumberFormat('ru-RU').format(tariff.priceKzt) + ' ₸',
-      period: '/ ' + tariff.periodDays + ' ' + strings.period,
-      description: '',
-      badge: '',
+      period: '/ ' + (tariff.periodDays === 30 ? strings.month : tariff.periodDays + ' ' + strings.period),
+      description: copy.description || '',
+      badge: copy.badge || '',
+      highlighted: Boolean(copy.highlighted),
       features: [
+        marketing.trial,
         strings.requests + ': ' + fmt(tariff.maxRequests),
         strings.channels + ': ' + fmt(tariff.maxChannels),
-        strings.users + ': ' + fmt(tariff.maxUsers)
+        strings.users + ': ' + fmt(tariff.maxUsers),
+        ...(copy.features || [])
       ]
     };
   }
@@ -1912,15 +1895,15 @@ function renderPricing() {
   state.tariffs.map(localizeTariff).forEach(tariff => {
     const buttonClass = tariff.highlighted ? 'primary-btn' : 'ghost-btn';
     const el = card(`pricing-card reveal ${tariff.highlighted ? 'highlighted' : ''}`, `
-      <span class="pricing-badge">${escapeHtml(tariff.badge || '7 дней бесплатно')}</span>
+      <span class="pricing-badge">${escapeHtml(tariff.badge || '')}</span>
       <h3>${escapeHtml(tariff.name)}</h3>
       <div class="price"><strong>${escapeHtml(tariff.price)}</strong><span>${escapeHtml(tariff.period || '')}</span></div>
       <p>${escapeHtml(tariff.description || '')}</p>
       <ul>${(tariff.features || []).map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
       <a class="${buttonClass}" href="/register" data-account-link="register" data-plan="${escapeHtml(tariff.name)}">${tr('nav.cta')}</a>
     `);
-    // System API does not promise a free trial or promotional badge.
-    if (tariff.source === 'system') el.querySelector('.pricing-badge')?.remove();
+    // No default badge: backend tariffs carry only a marketing badge (Popular / For chains).
+    if (!tariff.badge) el.querySelector('.pricing-badge')?.remove();
     root.appendChild(el);
     if (planSelect) {
       const opt = document.createElement('option');
