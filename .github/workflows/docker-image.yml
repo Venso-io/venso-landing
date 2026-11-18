@@ -4,10 +4,11 @@
 #   - push в main / тег v* / ручной запуск — собирает Dockerfile и пушит
 #     ghcr.io/<owner>/<repo> (latest, sha-…, ветка/тег)
 #   - pull_request — только сборка
-#   - main → стенд обновляется сразу (общий stage-deploy.yml из venso_deploy,
-#     Watchtower), итог — в Telegram (tg-notify.yml)
-# GHCR-доступ — встроенный GITHUB_TOKEN; для stage-deploy нужен секрет
-# STAGE_DEPLOY_TOKEN (тот же, что у backend/frontend).
+#   - стенд подтягивает новый latest сам: Watchtower опрашивает GHCR раз в 5 минут
+# Репо публичный — общие stage-deploy.yml / tg-notify.yml из приватного venso_deploy
+# ему недоступны (GitHub не даёт публичным репо звать приватные reusable workflows),
+# а копировать их сюда нельзя: в них токены. Поэтому без мгновенного деплоя и Telegram.
+# GHCR-доступ — встроенный GITHUB_TOKEN.
 # =============================================================================
 
 name: Build & publish image
@@ -65,19 +66,3 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-  deploy-stage:
-    needs: build
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    uses: Venso-io/venso_deploy/.github/workflows/stage-deploy.yml@main
-    with:
-      service: venso-landing
-    secrets: inherit
-
-  notify:
-    needs: build
-    if: always()
-    uses: Venso-io/venso_deploy/.github/workflows/tg-notify.yml@main
-    with:
-      service: venso-landing
-      status: ${{ needs.build.result }}
