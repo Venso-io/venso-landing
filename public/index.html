@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <!-- Change this same-origin path to /api/v1/tariffs when public Venso API routing is ready. -->
-  <meta name="venso-public-tariffs-endpoint" content="/api/tariffs" />
+  <meta name="venso-public-tariffs-endpoint" content="/api/v1/tariffs" />
   <meta name="theme-color" content="#050713" />
   <meta name="description" content="VENSO — AI-продавец нового поколения: диалоги, электронный склад, CRM, бухгалтерия, банки и аналитика в одном контуре." />
   <title>VENSO — AI-продавец нового поколения</title>
@@ -39,8 +39,8 @@
         <button class="lang-btn" data-lang="kk">KZ</button>
         <button class="lang-btn" data-lang="en">EN</button>
       </div>
-      <a class="primary-btn sm" href="/register" data-account-link="register" data-i18n="nav.cta">Зарегистрироваться</a>
-      <a class="header-login" href="/login" data-account-link="login" data-i18n="nav.login">Войти</a>
+      <a class="primary-btn sm" href="/app/register" data-account-link="register" data-i18n="nav.cta">Зарегистрироваться</a>
+      <a class="header-login" href="/app/login" data-account-link="login" data-i18n="nav.login">Войти</a>
       <button type="button" class="menu-btn" id="menuBtn" aria-label="Открыть меню" aria-controls="mobileMenu" aria-expanded="false"><span></span><span></span></button>
     </div>
     <nav class="mobile-menu" id="mobileMenu" aria-label="Мобильная навигация" data-i18n-aria-label="nav.mobileNav">
@@ -54,8 +54,8 @@
       <a href="#demo" data-i18n="nav.demo">Демо</a>
       <a href="#integrations" data-i18n="nav.integrations">Интеграции</a>
       <a href="#pricing" data-i18n="nav.pricing">Тарифы</a>
-      <a href="/login" data-account-link="login" data-i18n="nav.login">Войти</a>
-      <a href="/register" data-account-link="register" data-i18n="nav.cta">Зарегистрироваться</a>
+      <a href="/app/login" data-account-link="login" data-i18n="nav.login">Войти</a>
+      <a href="/app/register" data-account-link="register" data-i18n="nav.cta">Зарегистрироваться</a>
     </nav>
   </header>
 
@@ -68,7 +68,7 @@
           <h1 data-i18n="hero.title">AI-продавец, который продаёт, учитывает и закрывает заявки</h1>
           <p class="hero-sub" data-i18n="hero.subtitle">VENSO объединяет диалогового ассистента, электронный склад, аналитику продаж и интеграции с бухгалтерией, CRM и банками.</p>
           <div class="hero-actions">
-            <a class="primary-btn" href="/register" data-account-link="register" data-i18n="hero.demo">Зарегистрироваться</a>
+            <a class="primary-btn" href="/app/register" data-account-link="register" data-i18n="hero.demo">Зарегистрироваться</a>
             <a class="ghost-btn" href="#demo" data-i18n="hero.try">Посмотреть в действии</a>
           </div>
           <div class="signal-row">

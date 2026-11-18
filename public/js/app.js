@@ -1815,7 +1815,7 @@ function normalizeTariffPayload(payload) {
 async function fetchTariffs() {
   const fallback = normalizeTariffPayload(FALLBACK_TARIFFS);
   state.tariffs = fallback;
-  const endpoint = document.querySelector('meta[name="venso-public-tariffs-endpoint"]')?.content || '/api/tariffs';
+  const endpoint = document.querySelector('meta[name="venso-public-tariffs-endpoint"]')?.content || '/api/v1/tariffs';
   try {
     const url = new URL(endpoint, location.origin);
     if (url.protocol !== 'http:' && url.protocol !== 'https:') throw new Error('unsupported_protocol');
@@ -1900,7 +1900,7 @@ function renderPricing() {
       <div class="price"><strong>${escapeHtml(tariff.price)}</strong><span>${escapeHtml(tariff.period || '')}</span></div>
       <p>${escapeHtml(tariff.description || '')}</p>
       <ul>${(tariff.features || []).map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
-      <a class="${buttonClass}" href="/register" data-account-link="register" data-plan="${escapeHtml(tariff.name)}">${tr('nav.cta')}</a>
+      <a class="${buttonClass}" href="/app/register" data-account-link="register" data-plan="${escapeHtml(tariff.name)}">${tr('nav.cta')}</a>
     `);
     // No default badge: backend tariffs carry only a marketing badge (Popular / For chains).
     if (!tariff.badge) el.querySelector('.pricing-badge')?.remove();
@@ -2033,7 +2033,7 @@ function initLeadForm() {
     note.className = 'form-note';
     note.textContent = tr('form.sending');
     try {
-      const res = await fetch('/api/leads', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const res = await fetch('/api/v1/leads', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       if (!res.ok) throw new Error('failed');
       form.reset();
       note.className = 'form-note success';
@@ -2095,10 +2095,12 @@ function escapeHtml(str) {
   return String(str || '').replace(/[&<>'"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#039;', '"': '&quot;' }[ch]));
 }
 
+// The cabinet shares the domain with the site under /app (venso_deploy Caddyfile);
+// locally it runs on its own dev server :4000, still under /app.
 function accountUrl(route) {
   return (['localhost','127.0.0.1'].includes(location.hostname)
     ? location.protocol + '//' + location.hostname + ':4000'
-    : 'https://app.venso.ai') + '/' + route;
+    : '') + '/app/' + route;
 }
 function initAccountLinks(root = document) {
   root.querySelectorAll('[data-account-link]').forEach(a => { a.href = accountUrl(a.dataset.accountLink); });

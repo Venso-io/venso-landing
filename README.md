@@ -29,6 +29,28 @@ http://localhost:3010
 
 Служебная админка локально остается доступной по `/admin`, но на публичном лендинге ссылки на нее убраны.
 
+## Один домен с платформой
+
+На стенде и в проде лендинг живёт в корне домена вместе с платформой:
+
+| Путь | Куда |
+|---|---|
+| `/`, `/legal/*`, `/assets/*`, `/css/*`, `/js/*` | этот лендинг (образ `ghcr.io/venso-io/venso-landing`, статика на Caddy) |
+| `/app/*` | кабинет (Next.js, basePath `/app`) |
+| `/api/*` | backend Venso |
+
+Поэтому страница ходит в backend напрямую, без своего сервера: тарифы — `GET /api/v1/tariffs`
+(мета-тег `venso-public-tariffs-endpoint`), заявки — `POST /api/v1/leads`. Кнопки «Войти» /
+«Зарегистрироваться» ведут на `/app/login` и `/app/register` (на `localhost` — на dev-сервер
+кабинета `:4000/app`). Маршрутизация — `venso_deploy/staging-server/Caddyfile`.
+
+Образ: `Dockerfile` (только `public/` + `deploy/Caddyfile`, без `server.js`, `api/` и служебной
+админки), CI — `.github/workflows/docker-image.yml` (push в `main` → GHCR → обновление стенда).
+
+```bash
+docker build -t venso-landing . && docker run --rm -p 3010:8080 venso-landing
+```
+
 ## Backend Venso
 
 | Переменная | Назначение |
@@ -40,7 +62,7 @@ http://localhost:3010
 VENSO_API_URL=http://localhost:8080 npm start
 ```
 
-`/api/tariffs` проксирует публичный `GET /api/v1/tariffs` (без JWT) и кеширует ответ на минуту, поэтому CORS на backend для сайта не нужен. Цены, названия и лимиты — из backend, маркетинговые описания — в `TARIFF_MARKETING` (`public/js/app.js`) по коду тарифа. Без `VENSO_API_URL` локальный сервер отдаёт тарифы из локальной админки, а если их нет — страница показывает встроенную копию сида.
+Локальный `server.js` отвечает на `/api/v1/tariffs` и `/api/v1/leads` (и старые `/api/tariffs`, `/api/leads`) вместо backend: тарифы проксирует в публичный `GET /api/v1/tariffs`, а заявки при заданном `VENSO_API_URL` пересылает в `POST /api/v1/leads` backend'а (без него — пишет в локальный `data/store.json`). `/api/tariffs` проксирует публичный `GET /api/v1/tariffs` (без JWT) и кеширует ответ на минуту, поэтому CORS на backend для сайта не нужен. Цены, названия и лимиты — из backend, маркетинговые описания — в `TARIFF_MARKETING` (`public/js/app.js`) по коду тарифа. Без `VENSO_API_URL` локальный сервер отдаёт тарифы из локальной админки, а если их нет — страница показывает встроенную копию сида.
 
 ## Юридические документы и согласия
 
@@ -48,7 +70,11 @@ VENSO_API_URL=http://localhost:8080 npm start
 
 Заявка с сайта без отметки согласия на обработку ПДн отклоняется (`400 personal_data_consent_required`). Локальный сервер сохраняет с заявкой `personalDataConsent`, `consentAcceptedAt`, `consentDocuments`, `consentDocumentsVersion` и IP. На Vercel заявки пока не сохраняются.
 
-## Vercel
+## Vercel (до переезда на общий домен)
+
+`vercel.json` переписывает `/api/v1/tariffs` и `/api/v1/leads` на функции из `api/`, чтобы
+страница работала и отдельно от платформы. Ссылки на кабинет (`/app/...`) там никуда не ведут —
+основной вариант теперь общий домен.
 
 Для Vercel добавлены serverless endpoints:
 
