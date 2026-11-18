@@ -122,6 +122,35 @@ async function publicTariffs() {
   return { source: 'landing-store', tariffs: store.tariffs || [] };
 }
 
+/**
+ * With VENSO_API_URL the backend stores the lead (POST /api/v1/leads) — its answer,
+ * validation errors included, goes back to the page as is.
+ */
+async function forwardLead(req, res, body) {
+  try {
+    const response = await fetch(`${backendUrl()}/api/v1/leads`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Accept-Language': String(req.headers['accept-language'] || ''),
+        'User-Agent': String(req.headers['user-agent'] || ''),
+        'X-Forwarded-For': String(req.socket.remoteAddress || '')
+      },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(Number(process.env.VENSO_API_TIMEOUT_MS || 4000))
+    });
+    res.writeHead(response.status, {
+      'Content-Type': response.headers.get('content-type') || 'application/json; charset=utf-8',
+      'Cache-Control': 'no-store'
+    });
+    return res.end(await response.text());
+  } catch (error) {
+    console.warn(`Venso API leads unavailable: ${error.message}`);
+    return send(res, 502, { error: 'backend_unavailable' });
+  }
+}
+
 async function handleApi(req, res, url) {
   try {
     if (req.method === 'GET' && url.pathname === '/api/site') {
@@ -129,12 +158,16 @@ async function handleApi(req, res, url) {
       return send(res, 200, { tariffs: store.tariffs || [] });
     }
 
-    if (req.method === 'GET' && url.pathname === '/api/tariffs') {
+    // /api/v1/* — the paths the page calls on the shared domain, where Caddy sends
+    // them straight to the backend. Locally this server stands in for it; the
+    // old /api/tariffs and /api/leads stay as aliases.
+    if (req.method === 'GET' && (url.pathname === '/api/v1/tariffs' || url.pathname === '/api/tariffs')) {
       return send(res, 200, await publicTariffs());
     }
 
-    if (req.method === 'POST' && url.pathname === '/api/leads') {
+    if (req.method === 'POST' && (url.pathname === '/api/v1/leads' || url.pathname === '/api/leads')) {
       const body = await parseBody(req);
+      if (backendUrl()) return forwardLead(req, res, body);
       const lead = {
         id: crypto.randomUUID(),
         createdAt: new Date().toISOString(),

@@ -1,0 +1,28 @@
+# =============================================================================
+# Caddy внутри образа лендинга — отдаёт public/ как статику на :8080.
+# =============================================================================
+# Публичный домен, HTTPS и маршрутизацию держит внешний Caddy стенда
+# (venso_deploy/staging-server/Caddyfile): / → сюда, /app/* → кабинет,
+# /api/* → backend. Поэтому здесь только файлы, без TLS и без /api.
+# =============================================================================
+{
+	admin off
+	auto_https off
+}
+
+:8080 {
+	root * /srv
+	encode zstd gzip
+
+	# Чистые адреса, как cleanUrls на Vercel: /legal/privacy → /legal/privacy.html.
+	try_files {path} {path}.html {path}/index.html
+
+	# HTML/JS/CSS без хешей в именах — пусть браузер перепроверяет (ETag), иначе после
+	# выкладки день висят старые тексты и редакция юридических документов.
+	@images path /assets/* *.png *.ico *.svg *.webp *.jpg
+	@pages not path /assets/* *.png *.ico *.svg *.webp *.jpg
+	header @images Cache-Control "public, max-age=86400"
+	header @pages Cache-Control "no-cache"
+
+	file_server
+}

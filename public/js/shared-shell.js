@@ -42,9 +42,10 @@
     if(value)el.textContent=value;
    });
    element.querySelectorAll('[data-account-link]').forEach(a=>{
+    // Cabinet: same domain under /app; locally its dev server :4000.
     const base=['localhost','127.0.0.1'].includes(location.hostname)
-      ?location.protocol+'//'+location.hostname+':4000':'https://app.venso.ai';
-    a.href=base+'/'+a.dataset.accountLink;
+      ?location.protocol+'//'+location.hostname+':4000':'';
+    a.href=base+'/app/'+a.dataset.accountLink;
    });
   }
   document.querySelector('.legal-topbar')?.replaceWith(header);
